@@ -268,7 +268,7 @@ const Header = ({ onLogoClick, onShowCart, cartCount, onShowCategories }) => {
           className="flex-shrink-0 flex justify-center items-center"
         >
           <img
-            src="/Logo.png"
+            src={`${process.env.PUBLIC_URL}/Logo.png`}
             alt="KICKS Logo"
             style={{
               height: "48px",

@@ -1,7 +1,7 @@
 {
   "name": "my-app",
   "version": "0.1.0",
-  "homepage": "https://Pranskus.github.io/kicks",
+  "homepage": "https://Pranskus.github.io/kicks_web",
   "private": true,
   "dependencies": {
     "@iconscout/react-unicons": "^2.0.2",

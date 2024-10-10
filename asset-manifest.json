@@ -1,0 +1,35 @@
+{
+  "files": {
+    "main.css": "/kicks_web/static/css/main.e0bd18ca.css",
+    "main.js": "/kicks_web/static/js/main.14beeddf.js",
+    "static/js/453.68693753.chunk.js": "/kicks_web/static/js/453.68693753.chunk.js",
+    "static/media/sneaker_header.jpg": "/kicks_web/static/media/sneaker_header.ef79a1fca874ecd24998.jpg",
+    "static/media/angle2.jpg": "/kicks_web/static/media/angle2.627670039abfd035fe17.jpg",
+    "static/media/angle1.jpg": "/kicks_web/static/media/angle1.6dd86f58f960ca04f4f3.jpg",
+    "static/media/running_shoes.jpg": "/kicks_web/static/media/running_shoes.c24c3031913d7d569e02.jpg",
+    "static/media/basketball_shoes.jpg": "/kicks_web/static/media/basketball_shoes.5c9e2aa4c3b7208e0b53.jpg",
+    "static/media/training_shoes.jpg": "/kicks_web/static/media/training_shoes.dc5b1b9a2fcbc7f30393.jpg",
+    "static/media/Shoe4.jpg": "/kicks_web/static/media/Shoe4.130793bf64e988f7ddad.jpg",
+    "static/media/sn-2.jpg": "/kicks_web/static/media/sn-2.67ac94eda65aa10f3fab.jpg",
+    "static/media/Shoe1.jpg": "/kicks_web/static/media/Shoe1.fbc8cda52c6dab234ee2.jpg",
+    "static/media/sn-5.jpg": "/kicks_web/static/media/sn-5.c294ce1efc8676e73b47.jpg",
+    "static/media/sn-7.jpg": "/kicks_web/static/media/sn-7.93ef9510eed1fb5935a9.jpg",
+    "static/media/Shoe2.jpg": "/kicks_web/static/media/Shoe2.dd447154b5396dee839e.jpg",
+    "static/media/sn.jpg": "/kicks_web/static/media/sn.dd447154b5396dee839e.jpg",
+    "static/media/sn-6.jpg": "/kicks_web/static/media/sn-6.4aa31d1d54488f0bee4f.jpg",
+    "static/media/sn-8.jpg": "/kicks_web/static/media/sn-8.68725e4f93de66cc19b1.jpg",
+    "static/media/sn-4.jpg": "/kicks_web/static/media/sn-4.cd4485f4d5079973e2e7.jpg",
+    "static/media/sn-3.jpg": "/kicks_web/static/media/sn-3.b325952bb2c21244cf54.jpg",
+    "static/media/Shoe3.jpg": "/kicks_web/static/media/Shoe3.9a14e48bbc7ef580fc9b.jpg",
+    "static/media/sn-1.jpg": "/kicks_web/static/media/sn-1.9a14e48bbc7ef580fc9b.jpg",
+    "static/media/lifestyle_shoes.jpg": "/kicks_web/static/media/lifestyle_shoes.4c9729ab9247c5be064b.jpg",
+    "index.html": "/kicks_web/index.html",
+    "main.e0bd18ca.css.map": "/kicks_web/static/css/main.e0bd18ca.css.map",
+    "main.14beeddf.js.map": "/kicks_web/static/js/main.14beeddf.js.map",
+    "453.68693753.chunk.js.map": "/kicks_web/static/js/453.68693753.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.e0bd18ca.css",
+    "static/js/main.14beeddf.js"
+  ]
+}

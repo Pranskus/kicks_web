@@ -1,8 +1,21 @@
 import React from "react";
 import SimilarShoes from "./SimilarShoes";
+import { Product } from "../types";
 
-const ProductPage = ({ product, onShowProduct, onAddToCart, onBuyNow }) => {
-  const handleBuyNow = () => {
+interface ProductPageProps {
+  product: Product;
+  onShowProduct: (product: Product) => void;
+  onAddToCart: (product: Product) => void;
+  onBuyNow: () => void;
+}
+
+const ProductPage: React.FC<ProductPageProps> = ({
+  product,
+  onShowProduct,
+  onAddToCart,
+  onBuyNow,
+}) => {
+  const handleBuyNow = (): void => {
     onAddToCart(product);
     onBuyNow();
   };

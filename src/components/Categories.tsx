@@ -5,16 +5,24 @@ import RunningShoes from "../images/running_shoes.jpg";
 import TrainingShoes from "../images/training_shoes.jpg";
 import { UilArrowLeft, UilArrowRight, UilArrowUpRight } from "./IconWrappers";
 
-const Categories = () => {
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const categories = [
+// Add interfaces for the category data
+interface Category {
+  id: number;
+  img: string;
+  name: string;
+}
+
+const Categories: React.FC = () => {
+  const [currentIndex, setCurrentIndex] = useState<number>(0);
+
+  const categories: Category[] = [
     { id: 1, img: LifestyleShoes, name: "LIFESTYLE SHOES" },
     { id: 2, img: BasketballShoes, name: "BASKETBALL SHOES" },
     { id: 3, img: RunningShoes, name: "RUNNING SHOES" },
     { id: 4, img: TrainingShoes, name: "TRAINING SHOES" },
   ];
 
-  const nextSlide = () => {
+  const nextSlide = (): void => {
     setCurrentIndex((prevIndex) =>
       prevIndex === categories.length - (window.innerWidth >= 768 ? 2 : 1)
         ? 0
@@ -22,7 +30,7 @@ const Categories = () => {
     );
   };
 
-  const prevSlide = () => {
+  const prevSlide = (): void => {
     setCurrentIndex((prevIndex) =>
       prevIndex === 0
         ? categories.length - (window.innerWidth >= 768 ? 2 : 1)

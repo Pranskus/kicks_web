@@ -1,12 +1,17 @@
 import React from "react";
 import { UilHeart, UilTrashAlt } from "./IconWrappers";
+import { CartItem } from "../types";
 
-const CartPage = ({ cartItems, onRemoveItem }) => {
+// Add interfaces for the component props and cart item
+interface CartPageProps {
+  cartItems: CartItem[];
+  onRemoveItem: (id: string) => void;
+}
+
+// Update component definition with types
+const CartPage: React.FC<CartPageProps> = ({ cartItems, onRemoveItem }) => {
   const deliveryFee = 6.99;
-  const subtotal = cartItems.reduce(
-    (total, item) => total + parseFloat(item.price),
-    0
-  );
+  const subtotal = cartItems.reduce((total, item) => total + item.price, 0);
   const total = subtotal + deliveryFee;
 
   return (

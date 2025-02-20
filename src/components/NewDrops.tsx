@@ -3,9 +3,18 @@ import Shoe1 from "../images/Shoe1.jpg";
 import Shoe2 from "../images/Shoe2.jpg";
 import Shoe3 from "../images/Shoe3.jpg";
 import Shoe4 from "../images/Shoe4.jpg";
+import { Shoe } from "../types";
 
-const NewDrops = ({ onShowProduct, onShowCategories }) => {
-  const shoes = [
+interface NewDropsProps {
+  onShowProduct: (shoe: Shoe) => void;
+  onShowCategories: (gender: string, category: string) => void;
+}
+
+const NewDrops: React.FC<NewDropsProps> = ({
+  onShowProduct,
+  onShowCategories,
+}) => {
+  const shoes: Shoe[] = [
     {
       id: 1,
       img: Shoe1,

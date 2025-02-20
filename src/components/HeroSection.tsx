@@ -4,12 +4,15 @@ import Hero from "../images/sneaker_header.jpg";
 import SmallImage1 from "../images/angle1.jpg";
 import SmallImage2 from "../images/angle2.jpg";
 
-const HeroSection = ({ onShowCategories }) => {
-  // Receive the prop
-  const [scrollY, setScrollY] = useState(0);
+interface HeroSectionProps {
+  onShowCategories: () => void;
+}
+
+const HeroSection: React.FC<HeroSectionProps> = ({ onShowCategories }) => {
+  const [scrollY, setScrollY] = useState<number>(0);
 
   useEffect(() => {
-    const handleScroll = () => {
+    const handleScroll = (): void => {
       setScrollY(window.scrollY);
     };
 

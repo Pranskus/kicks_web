@@ -1,10 +1,18 @@
 import React from "react";
 import * as UniconsOriginal from "@iconscout/react-unicons";
 
-const withoutDefaultProps = (WrappedComponent) => {
-  const WrappedWithoutDefaultProps = (props) => <WrappedComponent {...props} />;
+// Define types for the component and props
+type IconComponent = typeof UniconsOriginal.UilSearch;
+type IconProps = React.ComponentProps<IconComponent>;
+
+const withoutDefaultProps = (
+  WrappedComponent: IconComponent
+): React.FC<IconProps> => {
+  const WrappedWithoutDefaultProps = React.forwardRef<SVGElement, IconProps>(
+    (props, ref) => React.createElement(WrappedComponent, { ...props, ref })
+  );
   WrappedWithoutDefaultProps.defaultProps = {};
-  return WrappedWithoutDefaultProps;
+  return WrappedWithoutDefaultProps as React.FC<IconProps>;
 };
 
 export const UilSearch = withoutDefaultProps(UniconsOriginal.UilSearch);

@@ -60,7 +60,13 @@ const HamburgerIcon = styled.button`
   }
 `;
 
-const MobileMenu = styled.div`
+// Add interface for MobileMenu props
+interface MobileMenuProps {
+  open: boolean;
+}
+
+// Update styled components with proper TypeScript types
+const MobileMenu = styled.div<MobileMenuProps>`
   position: fixed;
   top: 0;
   left: 0;
@@ -74,7 +80,7 @@ const MobileMenu = styled.div`
   flex-direction: column;
   align-items: center;
   text-align: center;
-  padding-top: 60px; // Add top padding to push content down
+  padding-top: 60px;
 `;
 
 const CloseButton = styled.button`
@@ -98,26 +104,39 @@ const MobileCartButton = styled(AnimatedCartButton)`
   }
 `;
 
-const Header = ({ onLogoClick, onShowCart, cartCount, onShowCategories }) => {
+// Add interface for Header props
+interface HeaderProps {
+  onLogoClick: () => void;
+  cartCount: number;
+  onShowCart: () => void;
+  onShowCategories: (gender: string, category: string) => void;
+}
+
+const Header: React.FC<HeaderProps> = ({
+  onLogoClick,
+  cartCount,
+  onShowCart,
+  onShowCategories,
+}) => {
   const [isSearchActive, setIsSearchActive] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false); // State for dropdown visibility
   const [showMenCategories, setShowMenCategories] = useState(false); // State for Men categories
   const [showWomenCategories, setShowWomenCategories] = useState(false); // State for Women categories
-  const searchRef = useRef(null);
-  const dropdownRef = useRef(null); // Ref for dropdown
+  const searchRef = useRef<HTMLDivElement>(null);
+  const dropdownRef = useRef<HTMLDivElement>(null); // Ref for dropdown
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [mobileSearchActive, setMobileSearchActive] = useState(false);
 
   useEffect(() => {
-    const handleClickOutside = (event) => {
+    const handleClickOutside = (event: MouseEvent) => {
       if (
         searchRef.current &&
-        !searchRef.current.contains(event.target) &&
+        !searchRef.current.contains(event.target as Node) &&
         dropdownRef.current &&
-        !dropdownRef.current.contains(event.target)
+        !dropdownRef.current.contains(event.target as Node)
       ) {
         setIsSearchActive(false);
-        setIsDropdownOpen(false); // Close dropdown when clicking outside
+        setIsDropdownOpen(false);
         setShowMenCategories(false);
         setShowWomenCategories(false);
       }
@@ -144,13 +163,13 @@ const Header = ({ onLogoClick, onShowCart, cartCount, onShowCategories }) => {
     ],
   };
 
-  const handleCartClick = (e) => {
+  const handleCartClick = (e: React.MouseEvent) => {
     e.preventDefault();
     console.log("Cart clicked in Header");
     onShowCart();
   };
 
-  const handleCategoryClick = (gender, category) => {
+  const handleCategoryClick = (gender: string, category: string): void => {
     onShowCategories(gender, category);
     setIsDropdownOpen(false);
     setShowMenCategories(false);

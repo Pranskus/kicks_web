@@ -10,21 +10,36 @@ import Sn6 from "../images/sn-6.jpg";
 import Sn7 from "../images/sn-7.jpg";
 import Sn8 from "../images/sn-8.jpg";
 
-const CategoriesPage = ({ onShowProduct, selectedCategory }) => {
+interface Shoe {
+  id: number;
+  img: string;
+  name: string;
+  price: string;
+}
+
+interface CategoriesPageProps {
+  onShowProduct: (shoe: Shoe) => void;
+  selectedCategory: string;
+}
+
+const CategoriesPage: React.FC<CategoriesPageProps> = ({
+  onShowProduct,
+  selectedCategory,
+}) => {
   // Use selectedCategory to filter or display products
   console.log("Selected category:", selectedCategory);
 
-  const [isSizeOpen, setIsSizeOpen] = useState(false);
-  const [isColorOpen, setIsColorOpen] = useState(false);
-  const [isTypeOpen, setIsTypeOpen] = useState(false);
-  const [isPriceOpen, setIsPriceOpen] = useState(false);
-  const [currentPage, setCurrentPage] = useState(1);
+  const [isSizeOpen, setIsSizeOpen] = useState<boolean>(false);
+  const [isColorOpen, setIsColorOpen] = useState<boolean>(false);
+  const [isTypeOpen, setIsTypeOpen] = useState<boolean>(false);
+  const [isPriceOpen, setIsPriceOpen] = useState<boolean>(false);
+  const [currentPage, setCurrentPage] = useState<number>(1);
   const itemsPerPage = 8; // Number of items per page
-  const [isFilterOpen, setIsFilterOpen] = useState(false);
-  const [isTrendingOpen, setIsTrendingOpen] = useState(false);
+  const [isFilterOpen, setIsFilterOpen] = useState<boolean>(false);
+  const [isTrendingOpen, setIsTrendingOpen] = useState<boolean>(false);
 
   // Sneakers array to hold shoe data
-  const shoes = [
+  const shoes: Shoe[] = [
     {
       id: 1,
       img: Sn,
@@ -96,7 +111,7 @@ const CategoriesPage = ({ onShowProduct, selectedCategory }) => {
   const totalPages = Math.ceil(shoes.length / itemsPerPage); // Calculate total pages
 
   // Function to handle page change
-  const handlePageChange = (pageNumber) => {
+  const handlePageChange = (pageNumber: number): void => {
     setCurrentPage(pageNumber);
   };
 
@@ -106,7 +121,7 @@ const CategoriesPage = ({ onShowProduct, selectedCategory }) => {
     currentPage * itemsPerPage
   );
 
-  const MobileFilterDropdown = () => (
+  const MobileFilterDropdown: React.FC = () => (
     <div className="fixed inset-0 bg-[#E7E7E3] z-50 overflow-y-auto">
       <div className="p-4">
         <div className="flex justify-between items-center mb-4">

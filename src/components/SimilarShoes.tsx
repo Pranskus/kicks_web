@@ -3,9 +3,14 @@ import Shoe1 from "../images/Shoe1.jpg";
 import Shoe2 from "../images/Shoe2.jpg";
 import Shoe3 from "../images/Shoe3.jpg";
 import Shoe4 from "../images/Shoe4.jpg";
+import { Shoe } from "../types";
 
-const SimilarShoes = ({ onShowProduct }) => {
-  const similarShoes = [
+interface SimilarShoesProps {
+  onShowProduct: (shoe: Shoe) => void;
+}
+
+const SimilarShoes: React.FC<SimilarShoesProps> = ({ onShowProduct }) => {
+  const similarShoes: Shoe[] = [
     {
       id: 1,
       img: Shoe1,

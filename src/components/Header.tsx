@@ -1,9 +1,8 @@
 import React, { useState, useRef, useEffect } from "react";
-import { Link } from "react-scroll"; // Import Link from react-scroll
+import { Link } from "react-scroll";
 import { UilSearch, UilShoppingCart, UilUser } from "./IconWrappers";
-import styled from "styled-components"; // Add this import if you're not already using styled-components
+import styled from "styled-components";
 
-// Add this styled component
 const AnimatedCartButton = styled.button`
   position: relative;
   display: flex;
@@ -32,7 +31,6 @@ const AnimatedCartButton = styled.button`
   }
 `;
 
-// Add this new styled component for the hamburger icon
 const HamburgerIcon = styled.button`
   display: flex;
   flex-direction: column;
@@ -60,12 +58,10 @@ const HamburgerIcon = styled.button`
   }
 `;
 
-// Add interface for MobileMenu props
 interface MobileMenuProps {
   open: boolean;
 }
 
-// Update styled components with proper TypeScript types
 const MobileMenu = styled.div<MobileMenuProps>`
   position: fixed;
   top: 0;
@@ -87,7 +83,7 @@ const CloseButton = styled.button`
   position: absolute;
   top: 20px;
   right: 20px;
-  font-size: 40px; // Increase font size
+  font-size: 40px;
   background: none;
   border: none;
   cursor: pointer;
@@ -104,7 +100,40 @@ const MobileCartButton = styled(AnimatedCartButton)`
   }
 `;
 
-// Add interface for Header props
+const AnimatedFire = styled.span`
+  display: inline-block;
+  transition: transform 0.3s ease;
+
+  .new-drops-link:hover & {
+    animation: burn 0.8s infinite;
+    transform-origin: bottom center;
+    filter: brightness(1.1);
+  }
+
+  @keyframes burn {
+    0% {
+      transform: scale(1) rotate(0deg);
+      filter: brightness(1);
+    }
+    25% {
+      transform: scale(1.1) rotate(-3deg);
+      filter: brightness(1.2);
+    }
+    50% {
+      transform: scale(1.15) rotate(3deg);
+      filter: brightness(1.3);
+    }
+    75% {
+      transform: scale(1.1) rotate(-2deg);
+      filter: brightness(1.2);
+    }
+    100% {
+      transform: scale(1) rotate(0deg);
+      filter: brightness(1);
+    }
+  }
+`;
+
 interface HeaderProps {
   onLogoClick: () => void;
   cartCount: number;
@@ -119,11 +148,11 @@ const Header: React.FC<HeaderProps> = ({
   onShowCategories,
 }) => {
   const [isSearchActive, setIsSearchActive] = useState(false);
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false); // State for dropdown visibility
-  const [showMenCategories, setShowMenCategories] = useState(false); // State for Men categories
-  const [showWomenCategories, setShowWomenCategories] = useState(false); // State for Women categories
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [showMenCategories, setShowMenCategories] = useState(false);
+  const [showWomenCategories, setShowWomenCategories] = useState(false);
   const searchRef = useRef<HTMLDivElement>(null);
-  const dropdownRef = useRef<HTMLDivElement>(null); // Ref for dropdown
+  const dropdownRef = useRef<HTMLDivElement>(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [mobileSearchActive, setMobileSearchActive] = useState(false);
 
@@ -186,13 +215,13 @@ const Header: React.FC<HeaderProps> = ({
         className="flex items-center justify-between bg-white shadow-lg"
         style={{
           width: "90vw",
-          maxWidth: "2560px", // Match the max-width of the hero section
+          maxWidth: "2560px",
           borderRadius: "30px",
           height: "80px",
           padding: "0 20px",
         }}
       >
-        {/* Left section: Hamburger menu for mobile and tablets, Navigation for desktop */}
+        {}
         <div className="flex-1 flex items-center justify-start">
           <HamburgerIcon
             onClick={toggleMobileMenu}
@@ -211,10 +240,10 @@ const Header: React.FC<HeaderProps> = ({
               to="new-drops"
               smooth={true}
               duration={500}
-              className="font-semibold text-gray-800 hover:text-[#2998ef] transition duration-300 whitespace-nowrap"
-              style={{ fontSize: "16px" }}
+              className="new-drops-link font-semibold text-gray-800 hover:text-[#2998ef] transition duration-300 whitespace-nowrap"
+              style={{ fontSize: "16px", cursor: "pointer" }}
             >
-              New Drops 🔥
+              New Drops <AnimatedFire>🔥</AnimatedFire>
             </Link>
             <div className="relative" ref={dropdownRef}>
               <button
@@ -222,7 +251,7 @@ const Header: React.FC<HeaderProps> = ({
                 onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                 style={{ fontSize: "16px" }}
               >
-                Categories ▼
+                Categories
               </button>
               {isDropdownOpen && (
                 <div className="absolute z-10 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
@@ -281,7 +310,7 @@ const Header: React.FC<HeaderProps> = ({
           </nav>
         </div>
 
-        {/* Center section: Logo */}
+        {}
         <div
           onClick={onLogoClick}
           className="flex-shrink-0 flex justify-center items-center"
@@ -297,7 +326,7 @@ const Header: React.FC<HeaderProps> = ({
           />
         </div>
 
-        {/* Right section: Cart and user buttons */}
+        {}
         <div className="flex-1 flex items-center justify-end space-x-4">
           <div className="relative hidden lg:flex items-center" ref={searchRef}>
             <button
@@ -344,18 +373,11 @@ const Header: React.FC<HeaderProps> = ({
           <button
             className="hidden lg:flex items-center rounded-full focus:outline-none"
             style={{ padding: "8px" }}
-          >
-            <UilUser
-              style={{
-                width: "24px",
-                height: "24px",
-              }}
-            />
-          </button>
+          ></button>
         </div>
       </header>
 
-      {/* Mobile menu */}
+      {}
       <MobileMenu open={isMobileMenuOpen}>
         <CloseButton onClick={toggleMobileMenu}>&times;</CloseButton>
         <div className="p-4 w-full">
@@ -363,26 +385,26 @@ const Header: React.FC<HeaderProps> = ({
             to="new-drops"
             smooth={true}
             duration={500}
-            className="block py-6 text-xl font-bold" // Increased top padding
+            className="block py-6 text-xl font-bold"
             onClick={toggleMobileMenu}
           >
             New Drops 🔥
           </Link>
           <div className="py-6">
             {" "}
-            {/* Increased top padding */}
+            {}
             <button
               className="text-xl font-bold"
               onClick={() => setIsDropdownOpen(!isDropdownOpen)}
             >
-              Categories ▼
+              Categories
             </button>
             {isDropdownOpen && (
               <div className="mt-4">
                 {" "}
-                {/* Increased top margin */}
+                {}
                 <button
-                  className="block py-3 w-full text-lg font-bold" // Increased padding
+                  className="block py-3 w-full text-lg font-bold"
                   onClick={() => setShowMenCategories(!showMenCategories)}
                 >
                   Men
@@ -392,7 +414,7 @@ const Header: React.FC<HeaderProps> = ({
                     {categories.Men.map((category) => (
                       <button
                         key={category}
-                        className="block py-3 w-full text-base font-semibold" // Increased padding
+                        className="block py-3 w-full text-base font-semibold"
                         onClick={() => {
                           handleCategoryClick("Men", category);
                           toggleMobileMenu();
@@ -404,7 +426,7 @@ const Header: React.FC<HeaderProps> = ({
                   </div>
                 )}
                 <button
-                  className="block py-3 w-full text-lg font-bold" // Increased padding
+                  className="block py-3 w-full text-lg font-bold"
                   onClick={() => setShowWomenCategories(!showWomenCategories)}
                 >
                   Women
@@ -414,7 +436,7 @@ const Header: React.FC<HeaderProps> = ({
                     {categories.Women.map((category) => (
                       <button
                         key={category}
-                        className="block py-3 w-full text-base font-semibold" // Increased padding
+                        className="block py-3 w-full text-base font-semibold"
                         onClick={() => {
                           handleCategoryClick("Women", category);
                           toggleMobileMenu();
@@ -430,7 +452,7 @@ const Header: React.FC<HeaderProps> = ({
           </div>
           <div className="py-6">
             {" "}
-            {/* Increased top padding */}
+            {}
             <button
               className="text-xl font-bold flex items-center justify-center w-full"
               onClick={() => setMobileSearchActive(!mobileSearchActive)}
@@ -443,19 +465,11 @@ const Header: React.FC<HeaderProps> = ({
             {mobileSearchActive && (
               <input
                 type="text"
-                className="mt-4 w-full border rounded-full px-4 py-3 text-center" // Increased padding
+                className="mt-4 w-full border rounded-full px-4 py-3 text-center"
                 placeholder="Search..."
               />
             )}
           </div>
-          <button className="py-6 text-xl font-bold flex items-center justify-center w-full">
-            {" "}
-            {/* Increased top padding */}
-            <UilUser
-              style={{ width: "24px", height: "24px", marginRight: "8px" }}
-            />
-            User
-          </button>
         </div>
       </MobileMenu>
     </div>

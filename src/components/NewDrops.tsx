@@ -4,11 +4,46 @@ import Shoe2 from "../images/Shoe2.jpg";
 import Shoe3 from "../images/Shoe3.jpg";
 import Shoe4 from "../images/Shoe4.jpg";
 import { Shoe } from "../types";
+import styled from "styled-components";
 
 interface NewDropsProps {
   onShowProduct: (shoe: Shoe) => void;
   onShowCategories: (gender: string, category: string) => void;
 }
+
+const PulsingButton = styled.button`
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+
+  &:hover {
+    transform: scale(1.05);
+  }
+
+  &:hover::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(to right, #4a69e1, #1da1f2);
+    opacity: 0.2;
+    animation: pulse 1.5s infinite;
+  }
+
+  @keyframes pulse {
+    0% {
+      opacity: 0.2;
+    }
+    50% {
+      opacity: 0.4;
+    }
+    100% {
+      opacity: 0.2;
+    }
+  }
+`;
 
 const NewDrops: React.FC<NewDropsProps> = ({
   onShowProduct,
@@ -55,26 +90,17 @@ const NewDrops: React.FC<NewDropsProps> = ({
               <br />
               NEW DROPS
             </h2>
-            <button
+            <PulsingButton
               className="mt-4 lg:mt-0 py-3 lg:py-4 px-6 lg:px-10 rounded-xl relative overflow-hidden mb-4 lg:mb-0"
               style={{
                 background: "linear-gradient(to right, #4a69e1, #1DA1F2)",
               }}
               onClick={() => onShowCategories("All", "New Drops")}
             >
-              <span
-                style={{
-                  background: "linear-gradient(to right, #4a69e1, #1DA1F2)",
-                  WebkitBackgroundClip: "text",
-                  color: "white",
-                  fontSize: "1rem",
-                  position: "relative",
-                  zIndex: 1,
-                }}
-              >
+              <span className="text-white text-base relative z-10">
                 SHOP NEW DROPS
               </span>
-            </button>
+            </PulsingButton>
           </div>
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
             {shoes.map((shoe) => (

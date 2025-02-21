@@ -3,10 +3,45 @@ import React, { useEffect, useState } from "react";
 import Hero from "../images/sneaker_header.jpg";
 import SmallImage1 from "../images/angle1.jpg";
 import SmallImage2 from "../images/angle2.jpg";
+import styled from "styled-components";
 
 interface HeroSectionProps {
   onShowCategories: () => void;
 }
+
+const PulsingButton = styled.button`
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+
+  &:hover {
+    transform: scale(1.05);
+  }
+
+  &:hover::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(to right, #4a69e1, #1da1f2);
+    opacity: 0.2;
+    animation: pulse 1.5s infinite;
+  }
+
+  @keyframes pulse {
+    0% {
+      opacity: 0.2;
+    }
+    50% {
+      opacity: 0.4;
+    }
+    100% {
+      opacity: 0.2;
+    }
+  }
+`;
 
 const HeroSection: React.FC<HeroSectionProps> = ({ onShowCategories }) => {
   const [scrollY, setScrollY] = useState<number>(0);
@@ -26,25 +61,6 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onShowCategories }) => {
     <div className="flex flex-col items-center justify-start">
       <div className="w-[90vw] max-w-[2560px] flex flex-col items-center pt-8 pb-10">
         {" "}
-        {/* Added consistent bottom padding */}
-        {/* <h2
-          className="font-extrabold text-black text-center w-full m-0 p-0"
-          style={{
-            fontSize: "clamp(2rem, 15vw, 12rem)",
-            lineHeight: "1",
-          }}
-        >
-          DO IT{" "}
-          <strong
-            style={{
-              background: "linear-gradient(to right, #4a69e1, #1DA1F2)",
-              WebkitBackgroundClip: "text",
-              WebkitTextFillColor: "transparent",
-            }}
-          >
-            RIGHT
-          </strong>
-        </h2> */}
         <div className="w-full mt-8">
           <div
             className="relative overflow-hidden"
@@ -82,8 +98,8 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onShowCategories }) => {
                 <p className="text-lg md:text-md text-white mt-2 md:mt-4 font-thin xl:text-2xl lg:text-1xl mx-auto md:mx-0 w-full md:w-auto max-w-[90%] md:max-w-[70%]">
                   Nike introducing the new air max for everyone's comfort
                 </p>
-                <button
-                  className="mt-6 md:mt-10 py-3 md:py-4 px-8 md:px-10 rounded-xl relative overflow-hidden mx-auto md:mx-0 w-full md:w-auto max-w-[200px]"
+                <PulsingButton
+                  className="mt-6 md:mt-10 py-3 md:py-4 px-8 md:px-10 rounded-xl"
                   style={{
                     background: "linear-gradient(to right, #4a69e1, #1DA1F2)",
                   }}
@@ -92,7 +108,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onShowCategories }) => {
                   <span className="text-white text-base md:text-lg relative z-10">
                     SHOP NOW
                   </span>
-                </button>
+                </PulsingButton>
               </div>
               <div className="flex flex-row justify-center md:justify-end space-x-4 md:space-x-6 mt-6 md:mt-0 md:absolute md:bottom-4 md:right-4 pb-6 md:pb-0">
                 <img

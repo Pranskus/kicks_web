@@ -385,10 +385,10 @@ const Header: React.FC<HeaderProps> = ({
             to="new-drops"
             smooth={true}
             duration={500}
-            className="block py-6 text-xl font-bold"
+            className="new-drops-link block py-6 text-xl font-bold"
             onClick={toggleMobileMenu}
           >
-            New Drops 🔥
+            New Drops <AnimatedFire>🔥</AnimatedFire>
           </Link>
           <div className="py-6">
             {" "}

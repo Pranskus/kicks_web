@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { UilArrowDown, UilArrowUp, UilArrowLeft } from "./IconWrappers"; // Import arrow icons
 import Sn from "../images/sn.jpg";
 import Sn1 from "../images/sn-1.jpg";
@@ -9,17 +9,89 @@ import Sn5 from "../images/sn-5.jpg";
 import Sn6 from "../images/sn-6.jpg";
 import Sn7 from "../images/sn-7.jpg";
 import Sn8 from "../images/sn-8.jpg";
-
-interface Shoe {
-  id: number;
-  img: string;
-  name: string;
-  price: string;
-}
+import Filters from "./Filters";
+import { Shoe } from "../types";
 
 interface CategoriesPageProps {
-  onShowProduct: (shoe: Shoe) => void;
+  onShowProduct: (product: Shoe) => void;
   selectedCategory: string;
+}
+
+// Move shoes data before the component
+const shoesData: Shoe[] = [
+  {
+    id: 1,
+    img: Sn,
+    name: "ADIDAS 4DFWD X PARLEY RUNNING SHOES",
+    price: "$140",
+  },
+  {
+    id: 2,
+    img: Sn1,
+    name: "ADIDAS 4DFWD X PARLEY RUNNING SHOES",
+    price: "$125",
+  },
+  {
+    id: 3,
+    img: Sn2,
+    name: "ADIDAS 4DFWD X STREET WHERE SHOES",
+    price: "$180",
+  },
+  {
+    id: 4,
+    img: Sn3,
+    name: "ADIDAS 4DFWD X PARLEY RUNNING SHOES",
+    price: "$125",
+  },
+  {
+    id: 5,
+    img: Sn4,
+    name: "ADIDAS 4DFWD X PARLEY RUNNING SHOES",
+    price: "$125",
+  },
+  {
+    id: 6,
+    img: Sn5,
+    name: "ADIDAS 4DFWD X PARLEY RUNNING SHOES",
+    price: "$125",
+  },
+  {
+    id: 7,
+    img: Sn6,
+    name: "ADIDAS 4DFWD X PARLEY RUNNING SHOES",
+    price: "$125",
+  },
+  {
+    id: 8,
+    img: Sn7,
+    name: "ADIDAS 4DFWD X PARLEY RUNNING SHOES",
+    price: "$125",
+  },
+  {
+    id: 9,
+    img: Sn8,
+    name: "ADIDAS 4DFWD X PARLEY RUNNING SHOES",
+    price: "$125",
+  },
+  {
+    id: 10,
+    img: Sn2,
+    name: "ADIDAS 4DFWD X PARLEY RUNNING SHOES",
+    price: "$125",
+  },
+  {
+    id: 11,
+    img: Sn6,
+    name: "ADIDAS 4DFWD X PARLEY RUNNING SHOES",
+    price: "$100",
+  },
+];
+
+interface FilterState {
+  type: string;
+  color: string;
+  size: string;
+  [key: string]: string; // Add index signature
 }
 
 const CategoriesPage: React.FC<CategoriesPageProps> = ({
@@ -38,85 +110,18 @@ const CategoriesPage: React.FC<CategoriesPageProps> = ({
   const [isFilterOpen, setIsFilterOpen] = useState<boolean>(false);
   const [isTrendingOpen, setIsTrendingOpen] = useState<boolean>(false);
 
-  // Sneakers array to hold shoe data
-  const shoes: Shoe[] = [
-    {
-      id: 1,
-      img: Sn,
-      name: "ADIDAS 4DFWD X PARLEY RUNNING SHOES",
-      price: "$140",
-    },
-    {
-      id: 2,
-      img: Sn1,
-      name: "ADIDAS 4DFWD X PARLEY RUNNING SHOES",
-      price: "$125",
-    },
-    {
-      id: 3,
-      img: Sn2,
-      name: "ADIDAS 4DFWD X STREET WHERE SHOES",
-      price: "$180",
-    },
-    {
-      id: 4,
-      img: Sn3,
-      name: "ADIDAS 4DFWD X PARLEY RUNNING SHOES",
-      price: "$125",
-    },
-    {
-      id: 5,
-      img: Sn4,
-      name: "ADIDAS 4DFWD X PARLEY RUNNING SHOES",
-      price: "$125",
-    },
-    {
-      id: 6,
-      img: Sn5,
-      name: "ADIDAS 4DFWD X PARLEY RUNNING SHOES",
-      price: "$125",
-    },
-    {
-      id: 7,
-      img: Sn6,
-      name: "ADIDAS 4DFWD X PARLEY RUNNING SHOES",
-      price: "$125",
-    },
-    {
-      id: 8,
-      img: Sn7,
-      name: "ADIDAS 4DFWD X PARLEY RUNNING SHOES",
-      price: "$125",
-    },
-    {
-      id: 9,
-      img: Sn8,
-      name: "ADIDAS 4DFWD X PARLEY RUNNING SHOES",
-      price: "$125",
-    },
-    {
-      id: 10,
-      img: Sn2,
-      name: "ADIDAS 4DFWD X PARLEY RUNNING SHOES",
-      price: "$125",
-    },
-    {
-      id: 11,
-      img: Sn6,
-      name: "ADIDAS 4DFWD X PARLEY RUNNING SHOES",
-      price: "$100",
-    },
-  ];
+  const [activeFilters, setActiveFilters] = useState<FilterState>({
+    type: "",
+    color: "",
+    size: "",
+  });
 
-  const totalPages = Math.ceil(shoes.length / itemsPerPage); // Calculate total pages
+  const [filteredShoes, setFilteredShoes] = useState<Shoe[]>(shoesData);
 
-  // Function to handle page change
-  const handlePageChange = (pageNumber: number): void => {
-    setCurrentPage(pageNumber);
-  };
+  const totalPages = Math.ceil(filteredShoes.length / itemsPerPage);
 
-  // Get the current items to display based on the current page
-  const currentItems = shoes.slice(
+  // Get current items from filtered shoes instead of all shoes
+  const currentItems = filteredShoes.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
   );
@@ -268,6 +273,47 @@ const CategoriesPage: React.FC<CategoriesPageProps> = ({
     </div>
   );
 
+  const handleFilterChange = (filterType: keyof FilterState, value: string) => {
+    const newFilters = {
+      ...activeFilters,
+      [filterType]: activeFilters[filterType] === value ? "" : value,
+    };
+    setActiveFilters(newFilters);
+
+    // Real filtering logic
+    let filtered = [...shoesData];
+
+    if (newFilters.type) {
+      filtered = filtered.filter((shoe) =>
+        shoe.name.toUpperCase().includes(newFilters.type.toUpperCase())
+      );
+    }
+
+    if (newFilters.color) {
+      filtered = filtered.filter((shoe) =>
+        shoe.name.toUpperCase().includes(newFilters.color.toUpperCase())
+      );
+    }
+
+    // Random filtering for size with different probabilities for each size
+    if (newFilters.size) {
+      const sizeMap: { [key: string]: number } = {
+        "40": 0.7, // 30% of shoes
+        "41": 0.5, // 50% of shoes
+        "42": 0.3, // 70% of shoes
+        "43": 0.6, // 40% of shoes
+        "44": 0.4, // 60% of shoes
+        "45": 0.8, // 20% of shoes
+      };
+
+      const probability = sizeMap[newFilters.size] || 0.5;
+      filtered = filtered.filter(() => Math.random() > probability);
+    }
+
+    setFilteredShoes(filtered);
+    setCurrentPage(1); // Reset to first page when filters change
+  };
+
   return (
     <div className="mx-4 lg:mx-20 pt-8 lg:pt-16 pb-20">
       <div className="lg:flex">
@@ -300,21 +346,15 @@ const CategoriesPage: React.FC<CategoriesPageProps> = ({
             </div>
             {isSizeOpen && (
               <div className="grid grid-cols-5 gap-1 mt-2">
-                {[
-                  "38",
-                  "39",
-                  "40",
-                  "41",
-                  "42",
-                  "43",
-                  "44",
-                  "45",
-                  "46",
-                  "47",
-                ].map((size) => (
+                {["40", "41", "42", "43", "44", "45"].map((size) => (
                   <button
                     key={size}
-                    className="border rounded-lg p-2 bg-stone-300 hover:bg-blue-500 hover:text-white"
+                    className={`border rounded-lg p-2 ${
+                      activeFilters.size === size
+                        ? "bg-blue-500 text-white"
+                        : "bg-stone-300 hover:bg-blue-500 hover:text-white"
+                    }`}
+                    onClick={() => handleFilterChange("size", size)}
                   >
                     {size}
                   </button>
@@ -337,7 +377,7 @@ const CategoriesPage: React.FC<CategoriesPageProps> = ({
               )}
             </div>
             {isColorOpen && (
-              <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-1 mt-2">
+              <div className="grid grid-cols-5 gap-2 mt-2">
                 {[
                   "#4a69e2",
                   "#ffa52f",
@@ -352,7 +392,7 @@ const CategoriesPage: React.FC<CategoriesPageProps> = ({
                 ].map((color) => (
                   <div
                     key={color}
-                    className="w-12 h-10 rounded-lg cursor-pointer mt-1"
+                    className="h-10 rounded-lg cursor-pointer"
                     style={{ backgroundColor: color }}
                     title={color}
                   />
@@ -361,7 +401,7 @@ const CategoriesPage: React.FC<CategoriesPageProps> = ({
             )}
           </div>
 
-          {/* Category Selection */}
+          {/* Type Selection */}
           <div className="p-4 rounded-lg mt-4">
             <div
               className="flex items-center justify-between cursor-pointer"
@@ -464,7 +504,9 @@ const CategoriesPage: React.FC<CategoriesPageProps> = ({
 
           {/* Items count and sorting (visible only on large screens) */}
           <div className="hidden lg:flex justify-between items-center mt-4">
-            <div className="text-lg text-gray-600">{shoes.length} Items</div>
+            <div className="text-lg text-gray-600">
+              {filteredShoes.length} Items
+            </div>
             <div className="bg-gray-300 p-1 rounded-lg">
               <select className="outline-none bg-transparent">
                 <option value="trending">Trending</option>
@@ -512,7 +554,7 @@ const CategoriesPage: React.FC<CategoriesPageProps> = ({
             <button
               className="bg-gray-300 px-4 py-2 rounded-md  hover:bg-blue-500  hover:text-white"
               disabled={currentPage === 1}
-              onClick={() => handlePageChange(currentPage - 1)}
+              onClick={() => setCurrentPage(currentPage - 1)}
             >
               PREVIOUS
             </button>
@@ -523,7 +565,7 @@ const CategoriesPage: React.FC<CategoriesPageProps> = ({
                 <button
                   key={index + 1}
                   className={`px-3 py-1 rounded-md ${currentPage === index + 1 ? "bg-blue-500 text-white" : "bg-gray-300"}`}
-                  onClick={() => handlePageChange(index + 1)} // Add onClick to change the page
+                  onClick={() => setCurrentPage(index + 1)} // Add onClick to change the page
                 >
                   {index + 1}
                 </button>
@@ -533,7 +575,7 @@ const CategoriesPage: React.FC<CategoriesPageProps> = ({
             <button
               className="bg-gray-300 px-4 py-2 rounded-md hover:bg-blue-500 hover:text-white"
               disabled={currentPage === totalPages}
-              onClick={() => handlePageChange(currentPage + 1)}
+              onClick={() => setCurrentPage(currentPage + 1)}
             >
               NEXT
             </button>

@@ -136,6 +136,45 @@ const CategoriesPage: React.FC<CategoriesPageProps> = ({
     currentPage * itemsPerPage
   );
 
+  // Add new state for sorting
+  const [sortType, setSortType] = useState<string>("trending");
+
+  // Add sorting function
+  const sortShoes = (shoes: Shoe[], type: string): Shoe[] => {
+    let sortedShoes = [...shoes];
+
+    switch (type) {
+      case "trending":
+        // Random but consistent sorting using shoe ID
+        sortedShoes.sort((a, b) => {
+          const randomA = (a.id * 0.789123) % 1;
+          const randomB = (b.id * 0.789123) % 1;
+          return randomA - randomB;
+        });
+        break;
+
+      case "popular":
+        // Different random but consistent sorting
+        sortedShoes.sort((a, b) => {
+          const randomA = (a.id * 0.456789) % 1;
+          const randomB = (b.id * 0.456789) % 1;
+          return randomA - randomB;
+        });
+        break;
+
+      case "price_low_high":
+        // Sort by price
+        sortedShoes.sort((a, b) => {
+          const priceA = parseInt(a.price.replace("$", ""));
+          const priceB = parseInt(b.price.replace("$", ""));
+          return priceA - priceB;
+        });
+        break;
+    }
+
+    return sortedShoes;
+  };
+
   const MobileFilterDropdown: React.FC = () => (
     <div className="fixed inset-0 bg-[#E7E7E3] z-50 overflow-y-auto">
       <div className="p-4">
@@ -377,29 +416,45 @@ const CategoriesPage: React.FC<CategoriesPageProps> = ({
   );
 
   const handleFilterChange = (filterType: keyof FilterState, value: string) => {
+    let filtered = [...shoesData];
+
+    // Create new filters state first
+    let newFilters = { ...activeFilters };
+
     if (filterType === "size") {
       const newSizes = activeFilters.sizes.includes(value)
         ? activeFilters.sizes.filter((size) => size !== value)
         : [...activeFilters.sizes, value];
+      newFilters.sizes = newSizes;
+    } else if (filterType === "color") {
+      const newColors = activeFilters.colors.includes(value)
+        ? activeFilters.colors.filter((color) => color !== value)
+        : [...activeFilters.colors, value];
+      newFilters.colors = newColors;
+    } else if (filterType === "type") {
+      const newTypes = activeFilters.types.includes(value)
+        ? activeFilters.types.filter((type) => type !== value)
+        : [...activeFilters.types, value];
+      newFilters.types = newTypes;
+    }
 
-      const newFilters = {
-        ...activeFilters,
-        sizes: newSizes,
+    setActiveFilters(newFilters);
+
+    // Apply all active filters
+    if (newFilters.sizes.length > 0) {
+      const sizeMap: { [key: string]: number } = {
+        "40": 0.85, // Show only 15% of shoes
+        "41": 0.65, // Show 35% of shoes
+        "42": 0.35, // Show 65% of shoes
+        "43": 0.35, // Show 65% of shoes
+        "44": 0.65, // Show 35% of shoes
+        "45": 0.85, // Show only 15% of shoes
       };
-      setActiveFilters(newFilters);
 
-      // Size filtering with consistent random selection
-      let filtered = [...shoesData];
-      if (newFilters.sizes.length > 0) {
-        const sizeMap: { [key: string]: number } = {
-          "40": 0.7,
-          "41": 0.5,
-          "42": 0.3,
-          "43": 0.6,
-          "44": 0.4,
-          "45": 0.8,
-        };
-
+      // If all sizes are selected, show all shoes
+      if (newFilters.sizes.length === 6) {
+        // Don't filter - keep all shoes
+      } else {
         filtered = filtered.filter((shoe) => {
           return newFilters.sizes.some((size) => {
             const probability = sizeMap[size] || 0.5;
@@ -408,83 +463,64 @@ const CategoriesPage: React.FC<CategoriesPageProps> = ({
           });
         });
       }
-
-      setFilteredShoes(filtered);
-      setCurrentPage(1);
-    } else if (filterType === "color") {
-      const newColors = activeFilters.colors.includes(value)
-        ? activeFilters.colors.filter((color) => color !== value)
-        : [...activeFilters.colors, value];
-
-      const newFilters = {
-        ...activeFilters,
-        colors: newColors,
-      };
-      setActiveFilters(newFilters);
-
-      // Color filtering with consistent random selection
-      let filtered = [...shoesData];
-      if (newFilters.colors.length > 0) {
-        const colorMap: { [key: string]: number } = {
-          "#4a69e2": 0.3,
-          "#ffa52f": 0.4,
-          black: 0.5,
-          "#234d40": 0.6,
-          "#a5a5a5": 0.4,
-          "#ef8154": 0.7,
-          "#677282": 0.5,
-          "#925513": 0.6,
-          "#bb8056": 0.4,
-          white: 0.3,
-        };
-
-        filtered = filtered.filter((shoe) => {
-          return newFilters.colors.some((color) => {
-            const probability = colorMap[color] || 0.5;
-            const randomValue = (shoe.id * 0.345678) % 1;
-            return randomValue > probability;
-          });
-        });
-      }
-
-      setFilteredShoes(filtered);
-      setCurrentPage(1);
-    } else if (filterType === "type") {
-      const newTypes = activeFilters.types.includes(value)
-        ? activeFilters.types.filter((type) => type !== value)
-        : [...activeFilters.types, value];
-
-      const newFilters = {
-        ...activeFilters,
-        types: newTypes,
-      };
-      setActiveFilters(newFilters);
-
-      // Type filtering with consistent random selection
-      let filtered = [...shoesData];
-      if (newFilters.types.length > 0) {
-        const typeMap: { [key: string]: number } = {
-          "Casual shoes": 0.6,
-          Runners: 0.4,
-          Hiking: 0.7,
-          Sneaker: 0.3,
-          Basketball: 0.5,
-          Golf: 0.8,
-          Outdoor: 0.6,
-        };
-
-        filtered = filtered.filter((shoe) => {
-          return newFilters.types.some((type) => {
-            const probability = typeMap[type] || 0.5;
-            const randomValue = (shoe.id * 0.234567) % 1;
-            return randomValue > probability;
-          });
-        });
-      }
-
-      setFilteredShoes(filtered);
-      setCurrentPage(1);
     }
+
+    if (newFilters.colors.length > 0) {
+      const colorMap: { [key: string]: number } = {
+        "#4a69e2": 0.3,
+        "#ffa52f": 0.4,
+        black: 0.5,
+        "#234d40": 0.6,
+        "#a5a5a5": 0.4,
+        "#ef8154": 0.7,
+        "#677282": 0.5,
+        "#925513": 0.6,
+        "#bb8056": 0.4,
+        white: 0.3,
+      };
+
+      filtered = filtered.filter((shoe) => {
+        return newFilters.colors.some((color) => {
+          const probability = colorMap[color] || 0.5;
+          const randomValue = (shoe.id * 0.345678) % 1;
+          return randomValue > probability;
+        });
+      });
+    }
+
+    if (newFilters.types.length > 0) {
+      const typeMap: { [key: string]: number } = {
+        "Casual shoes": 0.6,
+        Runners: 0.4,
+        Hiking: 0.7,
+        Sneaker: 0.3,
+        Basketball: 0.5,
+        Golf: 0.8,
+        Outdoor: 0.6,
+      };
+
+      filtered = filtered.filter((shoe) => {
+        return newFilters.types.some((type) => {
+          const probability = typeMap[type] || 0.5;
+          const randomValue = (shoe.id * 0.234567) % 1;
+          return randomValue > probability;
+        });
+      });
+    }
+
+    // Apply price filter if active
+    if (activeFilters.price.max < 1000) {
+      filtered = filtered.filter((shoe) => {
+        const shoePrice = parseInt(shoe.price.replace("$", ""));
+        return shoePrice <= activeFilters.price.max;
+      });
+    }
+
+    // Apply current sort to filtered results
+    filtered = sortShoes(filtered, sortType);
+
+    setFilteredShoes(filtered);
+    setCurrentPage(1);
   };
 
   return (
@@ -748,14 +784,19 @@ const CategoriesPage: React.FC<CategoriesPageProps> = ({
             </div>
             <div className="relative w-1/2 pl-2">
               <div className="bg-gray-300 p-2 rounded-lg">
-                <select className="w-full bg-transparent outline-none appearance-none pr-8">
+                <select
+                  className="w-full bg-transparent outline-none appearance-none pr-8"
+                  value={sortType}
+                  onChange={(e) => {
+                    const newSortType = e.target.value;
+                    setSortType(newSortType);
+                    setFilteredShoes(sortShoes(filteredShoes, newSortType));
+                  }}
+                >
                   <option value="trending">Trending</option>
                   <option value="popular">Popular</option>
                   <option value="price_low_high">Price: low to high</option>
                 </select>
-                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                  <UilArrowDown size={20} />
-                </div>
               </div>
             </div>
           </div>
@@ -766,7 +807,15 @@ const CategoriesPage: React.FC<CategoriesPageProps> = ({
               {filteredShoes.length} Items
             </div>
             <div className="bg-gray-300 p-1 rounded-lg">
-              <select className="outline-none bg-transparent">
+              <select
+                className="outline-none bg-transparent"
+                value={sortType}
+                onChange={(e) => {
+                  const newSortType = e.target.value;
+                  setSortType(newSortType);
+                  setFilteredShoes(sortShoes(filteredShoes, newSortType));
+                }}
+              >
                 <option value="trending">Trending</option>
                 <option value="popular">Popular</option>
                 <option value="price_low_high">Price: low to high</option>

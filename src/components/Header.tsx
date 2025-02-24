@@ -139,6 +139,7 @@ interface HeaderProps {
   cartCount: number;
   onShowCart: () => void;
   onShowCategories: (gender: string, category: string) => void;
+  onNewDropsClick: () => void;
 }
 
 const Header: React.FC<HeaderProps> = ({
@@ -146,6 +147,7 @@ const Header: React.FC<HeaderProps> = ({
   cartCount,
   onShowCart,
   onShowCategories,
+  onNewDropsClick,
 }) => {
   const [isSearchActive, setIsSearchActive] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -178,18 +180,8 @@ const Header: React.FC<HeaderProps> = ({
   }, []);
 
   const categories = {
-    Men: [
-      "Lifestyle Shoes",
-      "Basketball Shoes",
-      "Running Shoes",
-      "Training Shoes",
-    ],
-    Women: [
-      "Lifestyle Shoes",
-      "Basketball Shoes",
-      "Running Shoes",
-      "Training Shoes",
-    ],
+    Men: [],
+    Women: [],
   };
 
   const handleCartClick = (e: React.MouseEvent) => {
@@ -198,8 +190,8 @@ const Header: React.FC<HeaderProps> = ({
     onShowCart();
   };
 
-  const handleCategoryClick = (gender: string, category: string): void => {
-    onShowCategories(gender, category);
+  const handleCategoryClick = (gender: string): void => {
+    onShowCategories(gender, "all");
     setIsDropdownOpen(false);
     setShowMenCategories(false);
     setShowWomenCategories(false);
@@ -207,6 +199,13 @@ const Header: React.FC<HeaderProps> = ({
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
+  };
+
+  const handleNewDropsClick = () => {
+    onNewDropsClick();
+    if (isMobileMenuOpen) {
+      toggleMobileMenu();
+    }
   };
 
   return (
@@ -242,6 +241,7 @@ const Header: React.FC<HeaderProps> = ({
               duration={500}
               className="new-drops-link font-semibold text-gray-800 hover:text-[#2998ef] transition duration-300 whitespace-nowrap"
               style={{ fontSize: "16px", cursor: "pointer" }}
+              onClick={handleNewDropsClick}
             >
               New Drops <AnimatedFire>🔥</AnimatedFire>
             </Link>
@@ -263,7 +263,7 @@ const Header: React.FC<HeaderProps> = ({
                   >
                     <button
                       className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 w-full text-left"
-                      onClick={() => setShowMenCategories(!showMenCategories)}
+                      onClick={() => handleCategoryClick("Men")}
                     >
                       Men
                     </button>
@@ -273,7 +273,7 @@ const Header: React.FC<HeaderProps> = ({
                           <button
                             key={category}
                             className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 w-full text-left"
-                            onClick={() => handleCategoryClick("Men", category)}
+                            onClick={() => handleCategoryClick("Men")}
                           >
                             {category}
                           </button>
@@ -282,9 +282,7 @@ const Header: React.FC<HeaderProps> = ({
                     )}
                     <button
                       className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 w-full text-left"
-                      onClick={() =>
-                        setShowWomenCategories(!showWomenCategories)
-                      }
+                      onClick={() => handleCategoryClick("Women")}
                     >
                       Women
                     </button>
@@ -294,9 +292,7 @@ const Header: React.FC<HeaderProps> = ({
                           <button
                             key={category}
                             className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 w-full text-left"
-                            onClick={() =>
-                              handleCategoryClick("Women", category)
-                            }
+                            onClick={() => handleCategoryClick("Women")}
                           >
                             {category}
                           </button>
@@ -386,7 +382,7 @@ const Header: React.FC<HeaderProps> = ({
             smooth={true}
             duration={500}
             className="new-drops-link block py-6 text-xl font-bold"
-            onClick={toggleMobileMenu}
+            onClick={handleNewDropsClick}
           >
             New Drops <AnimatedFire>🔥</AnimatedFire>
           </Link>
@@ -405,7 +401,10 @@ const Header: React.FC<HeaderProps> = ({
                 {}
                 <button
                   className="block py-3 w-full text-lg font-bold"
-                  onClick={() => setShowMenCategories(!showMenCategories)}
+                  onClick={() => {
+                    handleCategoryClick("Men");
+                    toggleMobileMenu();
+                  }}
                 >
                   Men
                 </button>
@@ -416,7 +415,7 @@ const Header: React.FC<HeaderProps> = ({
                         key={category}
                         className="block py-3 w-full text-base font-semibold"
                         onClick={() => {
-                          handleCategoryClick("Men", category);
+                          handleCategoryClick("Men");
                           toggleMobileMenu();
                         }}
                       >
@@ -427,7 +426,10 @@ const Header: React.FC<HeaderProps> = ({
                 )}
                 <button
                   className="block py-3 w-full text-lg font-bold"
-                  onClick={() => setShowWomenCategories(!showWomenCategories)}
+                  onClick={() => {
+                    handleCategoryClick("Women");
+                    toggleMobileMenu();
+                  }}
                 >
                   Women
                 </button>
@@ -438,7 +440,7 @@ const Header: React.FC<HeaderProps> = ({
                         key={category}
                         className="block py-3 w-full text-base font-semibold"
                         onClick={() => {
-                          handleCategoryClick("Women", category);
+                          handleCategoryClick("Women");
                           toggleMobileMenu();
                         }}
                       >

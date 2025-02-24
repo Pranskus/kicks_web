@@ -70,6 +70,18 @@ const App: React.FC = () => {
     window.scrollTo(0, 0);
   };
 
+  const handleNewDropsClick = () => {
+    if (currentPage !== "home") {
+      setCurrentPage("home");
+      setTimeout(() => {
+        const newDropsSection = document.getElementById("new-drops");
+        if (newDropsSection) {
+          newDropsSection.scrollIntoView({ behavior: "smooth" });
+        }
+      }, 100);
+    }
+  };
+
   console.log("Current page:", currentPage);
 
   return (
@@ -79,6 +91,7 @@ const App: React.FC = () => {
         cartCount={cartCount}
         onShowCart={handleShowCart}
         onShowCategories={handleShowCategories}
+        onNewDropsClick={handleNewDropsClick}
       />
       {currentPage === "categories" && (
         <CategoriesPage

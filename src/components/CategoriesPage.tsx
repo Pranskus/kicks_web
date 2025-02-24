@@ -185,7 +185,7 @@ const CategoriesPage: React.FC<CategoriesPageProps> = ({
           )}
           {activeFilters.sizes.length > 0 && (
             <button
-              className="mt-3 w-full py-2 text-sm text-white bg-blue-500 rounded-lg hover:bg-blue-600 transition-colors"
+              className="mt-3 w-full text-sm text-stone-500 hover:text-stone-700 hover:font-medium transition-colors"
               onClick={() => {
                 setActiveFilters({ ...activeFilters, sizes: [] });
                 setFilteredShoes(shoesData);
@@ -241,7 +241,7 @@ const CategoriesPage: React.FC<CategoriesPageProps> = ({
               </div>
               {activeFilters.colors.length > 0 && (
                 <button
-                  className="w-full py-2 text-sm text-white bg-blue-500 rounded-lg hover:bg-blue-600 transition-colors"
+                  className="mt-3 w-full text-sm text-stone-500 hover:text-stone-700 hover:font-medium transition-colors"
                   onClick={() => {
                     setActiveFilters({ ...activeFilters, colors: [] });
                     setFilteredShoes(shoesData);
@@ -289,7 +289,7 @@ const CategoriesPage: React.FC<CategoriesPageProps> = ({
               ))}
               {activeFilters.types.length > 0 && (
                 <button
-                  className="mt-3 w-full py-2 text-sm text-white bg-blue-500 rounded-lg hover:bg-blue-600 transition-colors"
+                  className="mt-3 w-full text-sm text-stone-500 hover:text-stone-700 hover:font-medium transition-colors"
                   onClick={() => {
                     setActiveFilters({ ...activeFilters, types: [] });
                     setFilteredShoes(shoesData);
@@ -349,7 +349,7 @@ const CategoriesPage: React.FC<CategoriesPageProps> = ({
               </div>
               {priceRange < 1000 && (
                 <button
-                  className="mt-3 w-full text-sm text-blue-500 hover:text-blue-700 transition-colors"
+                  className="mt-3 w-full text-sm text-stone-500 hover:text-stone-700 hover:font-medium transition-colors"
                   onClick={() => {
                     setPriceRange(1000);
                     setActiveFilters({

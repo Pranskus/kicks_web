@@ -91,7 +91,11 @@ interface FilterState {
   types: string[];
   colors: string[];
   sizes: string[];
-  [key: string]: string[];
+  price: {
+    min: number;
+    max: number;
+  };
+  [key: string]: string[] | { min: number; max: number };
 }
 
 const CategoriesPage: React.FC<CategoriesPageProps> = ({
@@ -114,7 +118,13 @@ const CategoriesPage: React.FC<CategoriesPageProps> = ({
     types: [],
     colors: [],
     sizes: [],
+    price: {
+      min: 0,
+      max: 1000,
+    },
   });
+
+  const [priceRange, setPriceRange] = useState<number>(1000);
 
   const [filteredShoes, setFilteredShoes] = useState<Shoe[]>(shoesData);
 
@@ -293,7 +303,7 @@ const CategoriesPage: React.FC<CategoriesPageProps> = ({
         </div>
 
         {/* Price Slider */}
-        <div>
+        <div className="p-4 rounded-lg mt-4">
           <div
             className="flex items-center justify-between cursor-pointer"
             onClick={() => setIsPriceOpen(!isPriceOpen)}
@@ -306,12 +316,52 @@ const CategoriesPage: React.FC<CategoriesPageProps> = ({
             )}
           </div>
           {isPriceOpen && (
-            <div>
-              <input type="range" min="0" max="1000" className="w-full mt-2" />
-              <div className="flex justify-between">
-                <span>$0</span>
-                <span>$1000</span>
+            <div className="mt-4">
+              <input
+                type="range"
+                min="0"
+                max="1000"
+                value={priceRange}
+                className="w-full accent-blue-500"
+                onChange={(e) => {
+                  const newPrice = parseInt(e.target.value);
+                  setPriceRange(newPrice);
+                  const newFilters = {
+                    ...activeFilters,
+                    price: { min: 0, max: newPrice },
+                  };
+                  setActiveFilters(newFilters);
+
+                  // Filter shoes based on price
+                  let filtered = [...shoesData];
+                  filtered = filtered.filter((shoe) => {
+                    const shoePrice = parseInt(shoe.price.replace("$", ""));
+                    return shoePrice <= newPrice;
+                  });
+
+                  setFilteredShoes(filtered);
+                  setCurrentPage(1);
+                }}
+              />
+              <div className="flex justify-between mt-2">
+                <span className="text-sm text-gray-600">$0</span>
+                <span className="text-sm text-gray-600">${priceRange}</span>
               </div>
+              {priceRange < 1000 && (
+                <button
+                  className="mt-3 w-full text-sm text-blue-500 hover:text-blue-700 transition-colors"
+                  onClick={() => {
+                    setPriceRange(1000);
+                    setActiveFilters({
+                      ...activeFilters,
+                      price: { min: 0, max: 1000 },
+                    });
+                    setFilteredShoes(shoesData);
+                  }}
+                >
+                  Clear Price Filter
+                </button>
+              )}
             </div>
           )}
         </div>
@@ -486,7 +536,7 @@ const CategoriesPage: React.FC<CategoriesPageProps> = ({
             )}
             {activeFilters.sizes.length > 0 && (
               <button
-                className="mt-3 w-full py-2 text-sm text-white bg-blue-500 rounded-lg hover:bg-blue-600 transition-colors"
+                className="mt-3 w-full text-sm text-stone-500 hover:text-stone-700 hover:font-medium transition-colors"
                 onClick={() => {
                   setActiveFilters({ ...activeFilters, sizes: [] });
                   setFilteredShoes(shoesData);
@@ -542,7 +592,7 @@ const CategoriesPage: React.FC<CategoriesPageProps> = ({
                 </div>
                 {activeFilters.colors.length > 0 && (
                   <button
-                    className="w-full py-2 text-sm text-white bg-blue-500 rounded-lg hover:bg-blue-600 transition-colors"
+                    className="mt-3 w-full text-sm text-stone-500 hover:text-stone-700 hover:font-medium transition-colors"
                     onClick={() => {
                       setActiveFilters({ ...activeFilters, colors: [] });
                       setFilteredShoes(shoesData);
@@ -594,7 +644,7 @@ const CategoriesPage: React.FC<CategoriesPageProps> = ({
                 ))}
                 {activeFilters.types.length > 0 && (
                   <button
-                    className="mt-3 w-full py-2 text-sm text-white bg-blue-500 rounded-lg hover:bg-blue-600 transition-colors"
+                    className="mt-3 w-full text-sm text-stone-500 hover:text-stone-700 hover:font-medium transition-colors"
                     onClick={() => {
                       setActiveFilters({ ...activeFilters, types: [] });
                       setFilteredShoes(shoesData);
@@ -621,17 +671,52 @@ const CategoriesPage: React.FC<CategoriesPageProps> = ({
               )}
             </div>
             {isPriceOpen && (
-              <div>
+              <div className="mt-4">
                 <input
                   type="range"
                   min="0"
                   max="1000"
-                  className="w-full mt-2"
+                  value={priceRange}
+                  className="w-full accent-blue-500"
+                  onChange={(e) => {
+                    const newPrice = parseInt(e.target.value);
+                    setPriceRange(newPrice);
+                    const newFilters = {
+                      ...activeFilters,
+                      price: { min: 0, max: newPrice },
+                    };
+                    setActiveFilters(newFilters);
+
+                    // Filter shoes based on price
+                    let filtered = [...shoesData];
+                    filtered = filtered.filter((shoe) => {
+                      const shoePrice = parseInt(shoe.price.replace("$", ""));
+                      return shoePrice <= newPrice;
+                    });
+
+                    setFilteredShoes(filtered);
+                    setCurrentPage(1);
+                  }}
                 />
-                <div className="flex justify-between">
-                  <span>$0</span>
-                  <span>$1000</span>
+                <div className="flex justify-between mt-2">
+                  <span className="text-sm text-gray-600">$0</span>
+                  <span className="text-sm text-gray-600">${priceRange}</span>
                 </div>
+                {priceRange < 1000 && (
+                  <button
+                    className="mt-3 w-full text-sm text-stone-500 hover:text-stone-700 hover:font-medium transition-colors"
+                    onClick={() => {
+                      setPriceRange(1000);
+                      setActiveFilters({
+                        ...activeFilters,
+                        price: { min: 0, max: 1000 },
+                      });
+                      setFilteredShoes(shoesData);
+                    }}
+                  >
+                    Clear Price Filter
+                  </button>
+                )}
               </div>
             )}
           </div>

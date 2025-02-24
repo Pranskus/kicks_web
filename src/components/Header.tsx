@@ -134,6 +134,22 @@ const AnimatedFire = styled.span`
   }
 `;
 
+const FloatingCartButton = styled.button`
+  &.cart-added {
+    animation: cartBounce 0.5s cubic-bezier(0.36, 0, 0.66, -0.56) forwards;
+  }
+
+  @keyframes cartBounce {
+    0%,
+    100% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.2);
+    }
+  }
+`;
+
 interface HeaderProps {
   onLogoClick: () => void;
   cartCount: number;
@@ -157,6 +173,8 @@ const Header: React.FC<HeaderProps> = ({
   const dropdownRef = useRef<HTMLDivElement>(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [mobileSearchActive, setMobileSearchActive] = useState(false);
+  const [showFloatingCart, setShowFloatingCart] = useState(false);
+  const [isCartAnimating, setIsCartAnimating] = useState(false);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -178,6 +196,23 @@ const Header: React.FC<HeaderProps> = ({
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollPosition = window.scrollY;
+      setShowFloatingCart(scrollPosition > 200);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  useEffect(() => {
+    if (cartCount > 0) {
+      setIsCartAnimating(true);
+      setTimeout(() => setIsCartAnimating(false), 500);
+    }
+  }, [cartCount]);
 
   const categories = {
     Men: [],
@@ -209,272 +244,300 @@ const Header: React.FC<HeaderProps> = ({
   };
 
   return (
-    <div className="w-full flex justify-center items-center mt-8">
-      <header
-        className="flex items-center justify-between bg-white shadow-lg"
-        style={{
-          width: "90vw",
-          maxWidth: "2560px",
-          borderRadius: "30px",
-          height: "80px",
-          padding: "0 20px",
-        }}
-      >
-        {}
-        <div className="flex-1 flex items-center justify-start">
-          <HamburgerIcon
-            onClick={toggleMobileMenu}
-            className="lg:hidden"
-            style={{
-              width: "32px",
-              height: "32px",
-            }}
+    <>
+      <div className="w-full flex justify-center items-center mt-8">
+        <header
+          className="flex items-center justify-between bg-white shadow-lg"
+          style={{
+            width: "90vw",
+            maxWidth: "2560px",
+            borderRadius: "30px",
+            height: "80px",
+            padding: "0 20px",
+          }}
+        >
+          {}
+          <div className="flex-1 flex items-center justify-start">
+            <HamburgerIcon
+              onClick={toggleMobileMenu}
+              className="lg:hidden"
+              style={{
+                width: "32px",
+                height: "32px",
+              }}
+            >
+              <div />
+              <div />
+              <div />
+            </HamburgerIcon>
+            <nav className="hidden lg:flex items-center space-x-6">
+              <Link
+                to="new-drops"
+                smooth={true}
+                duration={500}
+                className="new-drops-link font-semibold text-gray-800 hover:text-[#2998ef] transition duration-300 whitespace-nowrap"
+                style={{ fontSize: "16px", cursor: "pointer" }}
+                onClick={handleNewDropsClick}
+              >
+                New Drops <AnimatedFire>🔥</AnimatedFire>
+              </Link>
+              <div className="relative" ref={dropdownRef}>
+                <button
+                  className="font-semibold text-gray-800 hover:text-[#2998ef] transition duration-300 whitespace-nowrap"
+                  onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                  style={{ fontSize: "16px" }}
+                >
+                  Categories
+                </button>
+                {isDropdownOpen && (
+                  <div className="absolute z-10 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
+                    <div
+                      className="py-1"
+                      role="menu"
+                      aria-orientation="vertical"
+                      aria-labelledby="options-menu"
+                    >
+                      <button
+                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 w-full text-left"
+                        onClick={() => handleCategoryClick("Men")}
+                      >
+                        Men
+                      </button>
+                      {showMenCategories && (
+                        <div className="pl-4">
+                          {categories.Men.map((category) => (
+                            <button
+                              key={category}
+                              className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 w-full text-left"
+                              onClick={() => handleCategoryClick("Men")}
+                            >
+                              {category}
+                            </button>
+                          ))}
+                        </div>
+                      )}
+                      <button
+                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 w-full text-left"
+                        onClick={() => handleCategoryClick("Women")}
+                      >
+                        Women
+                      </button>
+                      {showWomenCategories && (
+                        <div className="pl-4">
+                          {categories.Women.map((category) => (
+                            <button
+                              key={category}
+                              className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 w-full text-left"
+                              onClick={() => handleCategoryClick("Women")}
+                            >
+                              {category}
+                            </button>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
+              </div>
+            </nav>
+          </div>
+
+          {}
+          <div
+            onClick={onLogoClick}
+            className="flex-shrink-0 flex justify-center items-center"
           >
-            <div />
-            <div />
-            <div />
-          </HamburgerIcon>
-          <nav className="hidden lg:flex items-center space-x-6">
+            <img
+              src={`${process.env.PUBLIC_URL}/Logo.png`}
+              alt="KICKS Logo"
+              style={{
+                height: "48px",
+                width: "auto",
+                objectFit: "contain",
+              }}
+            />
+          </div>
+
+          {}
+          <div className="flex-1 flex items-center justify-end space-x-4">
+            <div
+              className="relative hidden lg:flex items-center"
+              ref={searchRef}
+            >
+              <button
+                onClick={() => setIsSearchActive(!isSearchActive)}
+                className="rounded-full focus:outline-none"
+                style={{ padding: "8px" }}
+              >
+                <UilSearch
+                  style={{
+                    width: "24px",
+                    height: "24px",
+                  }}
+                />
+              </button>
+              {isSearchActive && (
+                <input
+                  type="text"
+                  className="border rounded-full absolute right-0 top-full mt-2"
+                  style={{
+                    padding: "8px 16px 8px 40px",
+                    width: "200px",
+                    fontSize: "14px",
+                  }}
+                  placeholder="Search..."
+                  onBlur={() => setIsSearchActive(false)}
+                />
+              )}
+            </div>
+            <MobileCartButton onClick={handleCartClick} className="lg:p-2">
+              <UilShoppingCart className="w-8 h-8 lg:w-6 lg:h-6 cart-icon" />
+              <span
+                className="absolute bg-orange-500 text-white rounded-full flex items-center justify-center"
+                style={{
+                  top: "0",
+                  right: "0",
+                  width: "20px",
+                  height: "20px",
+                  fontSize: "12px",
+                }}
+              >
+                {cartCount}
+              </span>
+            </MobileCartButton>
+            <button
+              className="hidden lg:flex items-center rounded-full focus:outline-none"
+              style={{ padding: "8px" }}
+            ></button>
+          </div>
+        </header>
+
+        {}
+        <MobileMenu open={isMobileMenuOpen}>
+          <CloseButton onClick={toggleMobileMenu}>&times;</CloseButton>
+          <div className="p-4 w-full">
             <Link
               to="new-drops"
               smooth={true}
               duration={500}
-              className="new-drops-link font-semibold text-gray-800 hover:text-[#2998ef] transition duration-300 whitespace-nowrap"
-              style={{ fontSize: "16px", cursor: "pointer" }}
+              className="new-drops-link block py-6 text-xl font-bold"
               onClick={handleNewDropsClick}
             >
               New Drops <AnimatedFire>🔥</AnimatedFire>
             </Link>
-            <div className="relative" ref={dropdownRef}>
+            <div className="py-6">
+              {" "}
+              {}
               <button
-                className="font-semibold text-gray-800 hover:text-[#2998ef] transition duration-300 whitespace-nowrap"
+                className="text-xl font-bold"
                 onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                style={{ fontSize: "16px" }}
               >
                 Categories
               </button>
               {isDropdownOpen && (
-                <div className="absolute z-10 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
-                  <div
-                    className="py-1"
-                    role="menu"
-                    aria-orientation="vertical"
-                    aria-labelledby="options-menu"
+                <div className="mt-4">
+                  {" "}
+                  {}
+                  <button
+                    className="block py-3 w-full text-lg font-bold"
+                    onClick={() => {
+                      handleCategoryClick("Men");
+                      toggleMobileMenu();
+                    }}
                   >
-                    <button
-                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 w-full text-left"
-                      onClick={() => handleCategoryClick("Men")}
-                    >
-                      Men
-                    </button>
-                    {showMenCategories && (
-                      <div className="pl-4">
-                        {categories.Men.map((category) => (
-                          <button
-                            key={category}
-                            className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 w-full text-left"
-                            onClick={() => handleCategoryClick("Men")}
-                          >
-                            {category}
-                          </button>
-                        ))}
-                      </div>
-                    )}
-                    <button
-                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 w-full text-left"
-                      onClick={() => handleCategoryClick("Women")}
-                    >
-                      Women
-                    </button>
-                    {showWomenCategories && (
-                      <div className="pl-4">
-                        {categories.Women.map((category) => (
-                          <button
-                            key={category}
-                            className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 w-full text-left"
-                            onClick={() => handleCategoryClick("Women")}
-                          >
-                            {category}
-                          </button>
-                        ))}
-                      </div>
-                    )}
-                  </div>
+                    Men
+                  </button>
+                  {showMenCategories && (
+                    <div>
+                      {categories.Men.map((category) => (
+                        <button
+                          key={category}
+                          className="block py-3 w-full text-base font-semibold"
+                          onClick={() => {
+                            handleCategoryClick("Men");
+                            toggleMobileMenu();
+                          }}
+                        >
+                          {category}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                  <button
+                    className="block py-3 w-full text-lg font-bold"
+                    onClick={() => {
+                      handleCategoryClick("Women");
+                      toggleMobileMenu();
+                    }}
+                  >
+                    Women
+                  </button>
+                  {showWomenCategories && (
+                    <div>
+                      {categories.Women.map((category) => (
+                        <button
+                          key={category}
+                          className="block py-3 w-full text-base font-semibold"
+                          onClick={() => {
+                            handleCategoryClick("Women");
+                            toggleMobileMenu();
+                          }}
+                        >
+                          {category}
+                        </button>
+                      ))}
+                    </div>
+                  )}
                 </div>
               )}
             </div>
-          </nav>
-        </div>
-
-        {}
-        <div
-          onClick={onLogoClick}
-          className="flex-shrink-0 flex justify-center items-center"
-        >
-          <img
-            src={`${process.env.PUBLIC_URL}/Logo.png`}
-            alt="KICKS Logo"
-            style={{
-              height: "48px",
-              width: "auto",
-              objectFit: "contain",
-            }}
-          />
-        </div>
-
-        {}
-        <div className="flex-1 flex items-center justify-end space-x-4">
-          <div className="relative hidden lg:flex items-center" ref={searchRef}>
-            <button
-              onClick={() => setIsSearchActive(!isSearchActive)}
-              className="rounded-full focus:outline-none"
-              style={{ padding: "8px" }}
-            >
-              <UilSearch
-                style={{
-                  width: "24px",
-                  height: "24px",
-                }}
-              />
-            </button>
-            {isSearchActive && (
-              <input
-                type="text"
-                className="border rounded-full absolute right-0 top-full mt-2"
-                style={{
-                  padding: "8px 16px 8px 40px",
-                  width: "200px",
-                  fontSize: "14px",
-                }}
-                placeholder="Search..."
-                onBlur={() => setIsSearchActive(false)}
-              />
-            )}
+            <div className="py-6">
+              {" "}
+              {}
+              <button
+                className="text-xl font-bold flex items-center justify-center w-full"
+                onClick={() => setMobileSearchActive(!mobileSearchActive)}
+              >
+                <UilSearch
+                  style={{ width: "24px", height: "24px", marginRight: "8px" }}
+                />
+                Search
+              </button>
+              {mobileSearchActive && (
+                <input
+                  type="text"
+                  className="mt-4 w-full border rounded-full px-4 py-3 text-center"
+                  placeholder="Search..."
+                />
+              )}
+            </div>
           </div>
-          <MobileCartButton onClick={handleCartClick} className="lg:p-2">
-            <UilShoppingCart className="w-8 h-8 lg:w-6 lg:h-6 cart-icon" />
-            <span
-              className="absolute bg-orange-500 text-white rounded-full flex items-center justify-center"
-              style={{
-                top: "0",
-                right: "0",
-                width: "20px",
-                height: "20px",
-                fontSize: "12px",
-              }}
-            >
+        </MobileMenu>
+      </div>
+
+      {/* Floating Cart */}
+      <div
+        className={`fixed bottom-8 right-8 transition-all duration-300 transform z-[9999] ${
+          showFloatingCart
+            ? "translate-y-0 opacity-100"
+            : "translate-y-20 opacity-0"
+        }`}
+      >
+        <FloatingCartButton
+          onClick={handleCartClick}
+          className={`bg-stone-800 p-4 rounded-full shadow-lg hover:bg-stone-900 transition-colors duration-300 ${
+            isCartAnimating ? "cart-added" : ""
+          }`}
+        >
+          <UilShoppingCart className="w-6 h-6 text-white" />
+          {cartCount > 0 && (
+            <span className="absolute -top-2 -right-2 bg-orange-500 text-white w-6 h-6 rounded-full flex items-center justify-center text-sm">
               {cartCount}
             </span>
-          </MobileCartButton>
-          <button
-            className="hidden lg:flex items-center rounded-full focus:outline-none"
-            style={{ padding: "8px" }}
-          ></button>
-        </div>
-      </header>
-
-      {}
-      <MobileMenu open={isMobileMenuOpen}>
-        <CloseButton onClick={toggleMobileMenu}>&times;</CloseButton>
-        <div className="p-4 w-full">
-          <Link
-            to="new-drops"
-            smooth={true}
-            duration={500}
-            className="new-drops-link block py-6 text-xl font-bold"
-            onClick={handleNewDropsClick}
-          >
-            New Drops <AnimatedFire>🔥</AnimatedFire>
-          </Link>
-          <div className="py-6">
-            {" "}
-            {}
-            <button
-              className="text-xl font-bold"
-              onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-            >
-              Categories
-            </button>
-            {isDropdownOpen && (
-              <div className="mt-4">
-                {" "}
-                {}
-                <button
-                  className="block py-3 w-full text-lg font-bold"
-                  onClick={() => {
-                    handleCategoryClick("Men");
-                    toggleMobileMenu();
-                  }}
-                >
-                  Men
-                </button>
-                {showMenCategories && (
-                  <div>
-                    {categories.Men.map((category) => (
-                      <button
-                        key={category}
-                        className="block py-3 w-full text-base font-semibold"
-                        onClick={() => {
-                          handleCategoryClick("Men");
-                          toggleMobileMenu();
-                        }}
-                      >
-                        {category}
-                      </button>
-                    ))}
-                  </div>
-                )}
-                <button
-                  className="block py-3 w-full text-lg font-bold"
-                  onClick={() => {
-                    handleCategoryClick("Women");
-                    toggleMobileMenu();
-                  }}
-                >
-                  Women
-                </button>
-                {showWomenCategories && (
-                  <div>
-                    {categories.Women.map((category) => (
-                      <button
-                        key={category}
-                        className="block py-3 w-full text-base font-semibold"
-                        onClick={() => {
-                          handleCategoryClick("Women");
-                          toggleMobileMenu();
-                        }}
-                      >
-                        {category}
-                      </button>
-                    ))}
-                  </div>
-                )}
-              </div>
-            )}
-          </div>
-          <div className="py-6">
-            {" "}
-            {}
-            <button
-              className="text-xl font-bold flex items-center justify-center w-full"
-              onClick={() => setMobileSearchActive(!mobileSearchActive)}
-            >
-              <UilSearch
-                style={{ width: "24px", height: "24px", marginRight: "8px" }}
-              />
-              Search
-            </button>
-            {mobileSearchActive && (
-              <input
-                type="text"
-                className="mt-4 w-full border rounded-full px-4 py-3 text-center"
-                placeholder="Search..."
-              />
-            )}
-          </div>
-        </div>
-      </MobileMenu>
-    </div>
+          )}
+        </FloatingCartButton>
+      </div>
+    </>
   );
 };
 

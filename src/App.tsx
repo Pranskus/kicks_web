@@ -36,9 +36,7 @@ const App: React.FC = () => {
       id: product.id,
       name: product.name,
       img: product.img,
-      price: product.price
-        ? parseFloat(product.price.replace(/[^0-9.-]+/g, ""))
-        : 0,
+      price: parseFloat(product.price.replace(/[^0-9.-]+/g, "")),
       size: "42",
       cartItemId: Date.now().toString(),
     };

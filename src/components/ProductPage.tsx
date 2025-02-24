@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useState } from "react";
 import SimilarShoes from "./SimilarShoes";
 import { Product } from "../types";
+import CartAnimation from "./CartAnimation";
 
 interface ProductPageProps {
   product: Product;
@@ -15,13 +16,51 @@ const ProductPage: React.FC<ProductPageProps> = ({
   onAddToCart,
   onBuyNow,
 }) => {
+  const [animationStart, setAnimationStart] = useState({ x: 0, y: 0 });
+  const [animationEnd, setAnimationEnd] = useState({ x: 0, y: 0 });
+  const [showAnimation, setShowAnimation] = useState(false);
+  const [isAdded, setIsAdded] = useState(false);
+
   const handleBuyNow = (): void => {
     onAddToCart(product);
     onBuyNow();
   };
 
+  const handleAddToCart = (e: React.MouseEvent<HTMLButtonElement>) => {
+    const buttonRect = e.currentTarget.getBoundingClientRect();
+    setAnimationStart({
+      x: buttonRect.left + buttonRect.width / 2,
+      y: buttonRect.top + buttonRect.height / 2,
+    });
+
+    const cartIcon = document.querySelector(".cart-icon") as HTMLElement;
+    const cartRect = cartIcon.getBoundingClientRect();
+    setAnimationEnd({
+      x: cartRect.left + cartRect.width / 2,
+      y: cartRect.top + cartRect.height / 2,
+    });
+
+    setShowAnimation(true);
+    setIsAdded(true);
+
+    setTimeout(() => {
+      onAddToCart(product);
+    }, 500);
+
+    setTimeout(() => {
+      setIsAdded(false);
+    }, 2000);
+  };
+
   return (
     <div>
+      {showAnimation && (
+        <CartAnimation
+          startPosition={animationStart}
+          endPosition={animationEnd}
+          onComplete={() => setShowAnimation(false)}
+        />
+      )}
       {/* Large screen layout */}
       <div className="hidden lg:block mx-20 pt-16 pb-20">
         <div className="flex flex-row">
@@ -67,49 +106,45 @@ const ProductPage: React.FC<ProductPageProps> = ({
             <div className="mt-4">
               <h3 className="font-bold">COLOR</h3>
               <div className="flex space-x-2 mt-2">
-                <div className="w-8 h-8 rounded-full bg-black cursor-pointer" />
-                <div className="w-8 h-8 rounded-full bg-white cursor-pointer" />
+                <div className="w-8 h-8 rounded-full bg-black cursor-pointer transition-all duration-300 hover:shadow-lg" />
+                <div className="w-8 h-8 rounded-full bg-white cursor-pointer transition-all duration-300 hover:shadow-lg" />
               </div>
             </div>
             {/* Size Selection */}
             <div className="rounded-lg mt-4">
               <h3 className="font-bold">SIZE</h3>
               <div className="grid grid-cols-5 gap-2 mt-2">
-                {[
-                  "38",
-                  "39",
-                  "40",
-                  "41",
-                  "42",
-                  "43",
-                  "44",
-                  "45",
-                  "46",
-                  "47",
-                ].map((size) => (
-                  <button
-                    key={size}
-                    className={`border rounded-lg p-2 hover:bg-blue-500 hover:text-white ${
-                      size === "43" || size === "42"
-                        ? "bg-stone-400"
-                        : "bg-stone-300"
-                    }`}
-                  >
-                    {size}
-                  </button>
-                ))}
+                {["38", "39", "40", "41", "42", "43", "44", "45"].map(
+                  (size) => (
+                    <button
+                      key={size}
+                      className={`border rounded-lg p-2 transition-all duration-300 ${
+                        size === "43" || size === "42"
+                          ? "bg-stone-400 hover:bg-stone-500 hover:font-medium"
+                          : "bg-stone-300 hover:bg-stone-400 hover:font-medium"
+                      }`}
+                    >
+                      {size}
+                    </button>
+                  )
+                )}
               </div>
             </div>
             {/* Buttons */}
             <div className="flex flex-col mt-8 w-full">
               <button
-                className="py-2 px-4 bg-stone-800 text-white rounded-lg w-full mb-2"
-                onClick={() => onAddToCart(product)}
+                className={`py-2 px-4 rounded-lg w-full mb-2 transition-all duration-300 ${
+                  isAdded
+                    ? "bg-stone-400 hover:bg-stone-500"
+                    : "bg-stone-800 hover:bg-stone-900"
+                } text-white hover:font-medium hover:shadow-lg`}
+                onClick={handleAddToCart}
+                disabled={isAdded}
               >
-                ADD TO CART
+                {isAdded ? "ADDED" : "ADD TO CART"}
               </button>
               <button
-                className="py-2 px-4 bg-blue-500 text-white rounded-lg w-full"
+                className="py-2 px-4 bg-blue-500 text-white rounded-lg w-full transition-all duration-300 hover:bg-blue-600 hover:font-medium hover:shadow-lg"
                 onClick={handleBuyNow}
               >
                 BUY IT NOW
@@ -186,8 +221,8 @@ const ProductPage: React.FC<ProductPageProps> = ({
           <div className="mt-4">
             <h3 className="font-bold">Color</h3>
             <div className="flex space-x-2 mt-2">
-              <div className="w-8 h-8 rounded-full bg-black border-2 border-blue-500"></div>
-              <div className="w-8 h-8 rounded-full bg-gray-400"></div>
+              <div className="w-8 h-8 rounded-full bg-black cursor-pointer transition-all duration-300 hover:shadow-lg" />
+              <div className="w-8 h-8 rounded-full bg-white cursor-pointer transition-all duration-300 hover:shadow-lg" />
             </div>
           </div>
           <div className="mt-4">
@@ -214,10 +249,15 @@ const ProductPage: React.FC<ProductPageProps> = ({
           </div>
           <div className="mt-6 space-y-2">
             <button
-              className="w-full py-3 bg-black text-white rounded-xl"
-              onClick={() => onAddToCart(product)}
+              className={`w-full py-3 rounded-xl transition-all duration-300 ${
+                isAdded
+                  ? "bg-stone-400 hover:bg-stone-500"
+                  : "bg-black hover:bg-stone-900"
+              } text-white`}
+              onClick={handleAddToCart}
+              disabled={isAdded}
             >
-              ADD TO CART
+              {isAdded ? "ADDED" : "ADD TO CART"}
             </button>
           </div>
           <button

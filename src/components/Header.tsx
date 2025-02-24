@@ -352,7 +352,7 @@ const Header: React.FC<HeaderProps> = ({
             )}
           </div>
           <MobileCartButton onClick={handleCartClick} className="lg:p-2">
-            <UilShoppingCart className="w-8 h-8 lg:w-6 lg:h-6" />
+            <UilShoppingCart className="w-8 h-8 lg:w-6 lg:h-6 cart-icon" />
             <span
               className="absolute bg-orange-500 text-white rounded-full flex items-center justify-center"
               style={{

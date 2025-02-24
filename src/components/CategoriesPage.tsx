@@ -88,10 +88,10 @@ const shoesData: Shoe[] = [
 ];
 
 interface FilterState {
-  type: string;
-  color: string;
+  types: string[];
+  colors: string[];
   size: string;
-  [key: string]: string; // Add index signature
+  [key: string]: string | string[];
 }
 
 const CategoriesPage: React.FC<CategoriesPageProps> = ({
@@ -111,8 +111,8 @@ const CategoriesPage: React.FC<CategoriesPageProps> = ({
   const [isTrendingOpen, setIsTrendingOpen] = useState<boolean>(false);
 
   const [activeFilters, setActiveFilters] = useState<FilterState>({
-    type: "",
-    color: "",
+    types: [],
+    colors: [],
     size: "",
   });
 
@@ -173,7 +173,7 @@ const CategoriesPage: React.FC<CategoriesPageProps> = ({
         </div>
 
         {/* Color Selection */}
-        <div className="mb-4">
+        <div className="p-4 rounded-lg mt-4">
           <div
             className="flex items-center justify-between cursor-pointer"
             onClick={() => setIsColorOpen(!isColorOpen)}
@@ -186,32 +186,52 @@ const CategoriesPage: React.FC<CategoriesPageProps> = ({
             )}
           </div>
           {isColorOpen && (
-            <div className="grid grid-cols-5 gap-2 mt-2">
-              {[
-                "#4a69e2",
-                "#ffa52f",
-                "black",
-                "#234d40",
-                "#a5a5a5",
-                "#ef8154",
-                "#677282",
-                "#925513",
-                "#bb8056",
-                "white",
-              ].map((color) => (
-                <div
-                  key={color}
-                  className="h-10 rounded-lg cursor-pointer"
-                  style={{ backgroundColor: color }}
-                  title={color}
-                />
-              ))}
+            <div className="space-y-3">
+              <div className="grid grid-cols-5 gap-2 mt-2">
+                {[
+                  "#4a69e2",
+                  "#ffa52f",
+                  "black",
+                  "#234d40",
+                  "#a5a5a5",
+                  "#ef8154",
+                  "#677282",
+                  "#925513",
+                  "#bb8056",
+                  "white",
+                ].map((color) => (
+                  <div
+                    key={color}
+                    className={`h-10 rounded-lg cursor-pointer transition-all duration-200 ${
+                      activeFilters.colors.length > 0
+                        ? activeFilters.colors.includes(color)
+                          ? "ring-2 ring-blue-500 opacity-100"
+                          : "opacity-30"
+                        : "opacity-100"
+                    }`}
+                    style={{ backgroundColor: color }}
+                    title={color}
+                    onClick={() => handleFilterChange("color", color)}
+                  />
+                ))}
+              </div>
+              {activeFilters.colors.length > 0 && (
+                <button
+                  className="w-full py-2 text-sm text-white bg-blue-500 rounded-lg hover:bg-blue-600 transition-colors"
+                  onClick={() => {
+                    setActiveFilters({ ...activeFilters, colors: [] });
+                    setFilteredShoes(shoesData);
+                  }}
+                >
+                  Clear All Colors
+                </button>
+              )}
             </div>
           )}
         </div>
 
-        {/* Category Selection */}
-        <div className="mb-4">
+        {/* Type Selection */}
+        <div className="p-4 rounded-lg mt-4">
           <div
             className="flex items-center justify-between cursor-pointer"
             onClick={() => setIsTypeOpen(!isTypeOpen)}
@@ -230,11 +250,30 @@ const CategoriesPage: React.FC<CategoriesPageProps> = ({
                 "Golf",
                 "Outdoor",
               ].map((type) => (
-                <label key={type} className="flex items-center mt-1">
-                  <input type="checkbox" className="mr-2" />
+                <label
+                  key={type}
+                  className="flex items-center mt-1 cursor-pointer"
+                >
+                  <input
+                    type="checkbox"
+                    className="mr-2"
+                    checked={activeFilters.types.includes(type)}
+                    onChange={() => handleFilterChange("type", type)}
+                  />
                   {type}
                 </label>
               ))}
+              {activeFilters.types.length > 0 && (
+                <button
+                  className="mt-3 w-full py-2 text-sm text-white bg-blue-500 rounded-lg hover:bg-blue-600 transition-colors"
+                  onClick={() => {
+                    setActiveFilters({ ...activeFilters, types: [] });
+                    setFilteredShoes(shoesData);
+                  }}
+                >
+                  Clear All Types
+                </button>
+              )}
             </div>
           )}
         </div>
@@ -274,44 +313,109 @@ const CategoriesPage: React.FC<CategoriesPageProps> = ({
   );
 
   const handleFilterChange = (filterType: keyof FilterState, value: string) => {
-    const newFilters = {
-      ...activeFilters,
-      [filterType]: activeFilters[filterType] === value ? "" : value,
-    };
-    setActiveFilters(newFilters);
+    if (filterType === "type") {
+      const newTypes = activeFilters.types.includes(value)
+        ? activeFilters.types.filter((type) => type !== value)
+        : [...activeFilters.types, value];
 
-    // Real filtering logic
-    let filtered = [...shoesData];
-
-    if (newFilters.type) {
-      filtered = filtered.filter((shoe) =>
-        shoe.name.toUpperCase().includes(newFilters.type.toUpperCase())
-      );
-    }
-
-    if (newFilters.color) {
-      filtered = filtered.filter((shoe) =>
-        shoe.name.toUpperCase().includes(newFilters.color.toUpperCase())
-      );
-    }
-
-    // Random filtering for size with different probabilities for each size
-    if (newFilters.size) {
-      const sizeMap: { [key: string]: number } = {
-        "40": 0.7, // 30% of shoes
-        "41": 0.5, // 50% of shoes
-        "42": 0.3, // 70% of shoes
-        "43": 0.6, // 40% of shoes
-        "44": 0.4, // 60% of shoes
-        "45": 0.8, // 20% of shoes
+      const newFilters = {
+        ...activeFilters,
+        types: newTypes,
       };
+      setActiveFilters(newFilters);
 
-      const probability = sizeMap[newFilters.size] || 0.5;
-      filtered = filtered.filter(() => Math.random() > probability);
+      // Type filtering with consistent random selection
+      let filtered = [...shoesData];
+      if (newFilters.types.length > 0) {
+        const typeMap: { [key: string]: number } = {
+          "Casual shoes": 0.6,
+          Runners: 0.4,
+          Hiking: 0.7,
+          Sneaker: 0.3,
+          Basketball: 0.5,
+          Golf: 0.8,
+          Outdoor: 0.6,
+        };
+
+        filtered = filtered.filter((shoe) => {
+          return newFilters.types.some((type) => {
+            const probability = typeMap[type] || 0.5;
+            const randomValue = (shoe.id * 0.234567) % 1;
+            return randomValue > probability;
+          });
+        });
+      }
+
+      setFilteredShoes(filtered);
+      setCurrentPage(1);
+    } else if (filterType === "color") {
+      const newColors = activeFilters.colors.includes(value)
+        ? activeFilters.colors.filter((color) => color !== value)
+        : [...activeFilters.colors, value];
+
+      const newFilters = {
+        ...activeFilters,
+        colors: newColors,
+      };
+      setActiveFilters(newFilters);
+
+      // Color filtering with consistent random selection
+      let filtered = [...shoesData];
+      if (newFilters.colors.length > 0) {
+        const colorMap: { [key: string]: number } = {
+          "#4a69e2": 0.3,
+          "#ffa52f": 0.4,
+          black: 0.5,
+          "#234d40": 0.6,
+          "#a5a5a5": 0.4,
+          "#ef8154": 0.7,
+          "#677282": 0.5,
+          "#925513": 0.6,
+          "#bb8056": 0.4,
+          white: 0.3,
+        };
+
+        filtered = filtered.filter((shoe) => {
+          return newFilters.colors.some((color) => {
+            const probability = colorMap[color] || 0.5;
+            const randomValue = (shoe.id * 0.345678) % 1;
+            return randomValue > probability;
+          });
+        });
+      }
+
+      setFilteredShoes(filtered);
+      setCurrentPage(1);
+    } else {
+      const newFilters = {
+        ...activeFilters,
+        size: activeFilters.size === value ? "" : value,
+      };
+      setActiveFilters(newFilters);
+
+      // Real filtering logic
+      let filtered = [...shoesData];
+
+      // Size filtering (unchanged)
+      if (newFilters.size) {
+        const sizeMap: { [key: string]: number } = {
+          "40": 0.7,
+          "41": 0.5,
+          "42": 0.3,
+          "43": 0.6,
+          "44": 0.4,
+          "45": 0.8,
+        };
+        const probability = sizeMap[newFilters.size] || 0.5;
+        filtered = filtered.filter((shoe) => {
+          const randomValue = (shoe.id * 0.123457) % 1;
+          return randomValue > probability;
+        });
+      }
+
+      setFilteredShoes(filtered);
+      setCurrentPage(1);
     }
-
-    setFilteredShoes(filtered);
-    setCurrentPage(1); // Reset to first page when filters change
   };
 
   return (
@@ -377,26 +481,46 @@ const CategoriesPage: React.FC<CategoriesPageProps> = ({
               )}
             </div>
             {isColorOpen && (
-              <div className="grid grid-cols-5 gap-2 mt-2">
-                {[
-                  "#4a69e2",
-                  "#ffa52f",
-                  "black",
-                  "#234d40",
-                  "#a5a5a5",
-                  "#ef8154",
-                  "#677282",
-                  "#925513",
-                  "#bb8056",
-                  "white",
-                ].map((color) => (
-                  <div
-                    key={color}
-                    className="h-10 rounded-lg cursor-pointer"
-                    style={{ backgroundColor: color }}
-                    title={color}
-                  />
-                ))}
+              <div className="space-y-3">
+                <div className="grid grid-cols-5 gap-2 mt-2">
+                  {[
+                    "#4a69e2",
+                    "#ffa52f",
+                    "black",
+                    "#234d40",
+                    "#a5a5a5",
+                    "#ef8154",
+                    "#677282",
+                    "#925513",
+                    "#bb8056",
+                    "white",
+                  ].map((color) => (
+                    <div
+                      key={color}
+                      className={`h-10 rounded-lg cursor-pointer transition-all duration-200 ${
+                        activeFilters.colors.length > 0
+                          ? activeFilters.colors.includes(color)
+                            ? "ring-2 ring-blue-500 opacity-100"
+                            : "opacity-30"
+                          : "opacity-100"
+                      }`}
+                      style={{ backgroundColor: color }}
+                      title={color}
+                      onClick={() => handleFilterChange("color", color)}
+                    />
+                  ))}
+                </div>
+                {activeFilters.colors.length > 0 && (
+                  <button
+                    className="w-full py-2 text-sm text-white bg-blue-500 rounded-lg hover:bg-blue-600 transition-colors"
+                    onClick={() => {
+                      setActiveFilters({ ...activeFilters, colors: [] });
+                      setFilteredShoes(shoesData);
+                    }}
+                  >
+                    Clear All Colors
+                  </button>
+                )}
               </div>
             )}
           </div>
@@ -425,11 +549,30 @@ const CategoriesPage: React.FC<CategoriesPageProps> = ({
                   "Golf",
                   "Outdoor",
                 ].map((type) => (
-                  <label key={type} className="flex items-center mt-1">
-                    <input type="checkbox" className="mr-2" />
+                  <label
+                    key={type}
+                    className="flex items-center mt-1 cursor-pointer"
+                  >
+                    <input
+                      type="checkbox"
+                      className="mr-2"
+                      checked={activeFilters.types.includes(type)}
+                      onChange={() => handleFilterChange("type", type)}
+                    />
                     {type}
                   </label>
                 ))}
+                {activeFilters.types.length > 0 && (
+                  <button
+                    className="mt-3 w-full py-2 text-sm text-white bg-blue-500 rounded-lg hover:bg-blue-600 transition-colors"
+                    onClick={() => {
+                      setActiveFilters({ ...activeFilters, types: [] });
+                      setFilteredShoes(shoesData);
+                    }}
+                  >
+                    Clear All Types
+                  </button>
+                )}
               </div>
             )}
           </div>

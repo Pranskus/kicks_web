@@ -90,8 +90,8 @@ const shoesData: Shoe[] = [
 interface FilterState {
   types: string[];
   colors: string[];
-  size: string;
-  [key: string]: string | string[];
+  sizes: string[];
+  [key: string]: string[];
 }
 
 const CategoriesPage: React.FC<CategoriesPageProps> = ({
@@ -113,7 +113,7 @@ const CategoriesPage: React.FC<CategoriesPageProps> = ({
   const [activeFilters, setActiveFilters] = useState<FilterState>({
     types: [],
     colors: [],
-    size: "",
+    sizes: [],
   });
 
   const [filteredShoes, setFilteredShoes] = useState<Shoe[]>(shoesData);
@@ -158,17 +158,31 @@ const CategoriesPage: React.FC<CategoriesPageProps> = ({
           </div>
           {isSizeOpen && (
             <div className="grid grid-cols-5 gap-2 mt-2">
-              {["38", "39", "40", "41", "42", "43", "44", "45", "46", "47"].map(
-                (size) => (
-                  <button
-                    key={size}
-                    className="border rounded-lg py-2 bg-stone-300 hover:bg-blue-500 hover:text-white"
-                  >
-                    {size}
-                  </button>
-                )
-              )}
+              {["40", "41", "42", "43", "44", "45"].map((size) => (
+                <button
+                  key={size}
+                  className={`border rounded-lg py-2 ${
+                    activeFilters.sizes.includes(size)
+                      ? "bg-blue-500 text-white"
+                      : "bg-stone-300 hover:bg-blue-500 hover:text-white"
+                  }`}
+                  onClick={() => handleFilterChange("size", size)}
+                >
+                  {size}
+                </button>
+              ))}
             </div>
+          )}
+          {activeFilters.sizes.length > 0 && (
+            <button
+              className="mt-3 w-full py-2 text-sm text-white bg-blue-500 rounded-lg hover:bg-blue-600 transition-colors"
+              onClick={() => {
+                setActiveFilters({ ...activeFilters, sizes: [] });
+                setFilteredShoes(shoesData);
+              }}
+            >
+              Clear All Sizes
+            </button>
           )}
         </div>
 
@@ -313,34 +327,33 @@ const CategoriesPage: React.FC<CategoriesPageProps> = ({
   );
 
   const handleFilterChange = (filterType: keyof FilterState, value: string) => {
-    if (filterType === "type") {
-      const newTypes = activeFilters.types.includes(value)
-        ? activeFilters.types.filter((type) => type !== value)
-        : [...activeFilters.types, value];
+    if (filterType === "size") {
+      const newSizes = activeFilters.sizes.includes(value)
+        ? activeFilters.sizes.filter((size) => size !== value)
+        : [...activeFilters.sizes, value];
 
       const newFilters = {
         ...activeFilters,
-        types: newTypes,
+        sizes: newSizes,
       };
       setActiveFilters(newFilters);
 
-      // Type filtering with consistent random selection
+      // Size filtering with consistent random selection
       let filtered = [...shoesData];
-      if (newFilters.types.length > 0) {
-        const typeMap: { [key: string]: number } = {
-          "Casual shoes": 0.6,
-          Runners: 0.4,
-          Hiking: 0.7,
-          Sneaker: 0.3,
-          Basketball: 0.5,
-          Golf: 0.8,
-          Outdoor: 0.6,
+      if (newFilters.sizes.length > 0) {
+        const sizeMap: { [key: string]: number } = {
+          "40": 0.7,
+          "41": 0.5,
+          "42": 0.3,
+          "43": 0.6,
+          "44": 0.4,
+          "45": 0.8,
         };
 
         filtered = filtered.filter((shoe) => {
-          return newFilters.types.some((type) => {
-            const probability = typeMap[type] || 0.5;
-            const randomValue = (shoe.id * 0.234567) % 1;
+          return newFilters.sizes.some((size) => {
+            const probability = sizeMap[size] || 0.5;
+            const randomValue = (shoe.id * 0.123457) % 1;
             return randomValue > probability;
           });
         });
@@ -386,30 +399,36 @@ const CategoriesPage: React.FC<CategoriesPageProps> = ({
 
       setFilteredShoes(filtered);
       setCurrentPage(1);
-    } else {
+    } else if (filterType === "type") {
+      const newTypes = activeFilters.types.includes(value)
+        ? activeFilters.types.filter((type) => type !== value)
+        : [...activeFilters.types, value];
+
       const newFilters = {
         ...activeFilters,
-        size: activeFilters.size === value ? "" : value,
+        types: newTypes,
       };
       setActiveFilters(newFilters);
 
-      // Real filtering logic
+      // Type filtering with consistent random selection
       let filtered = [...shoesData];
-
-      // Size filtering (unchanged)
-      if (newFilters.size) {
-        const sizeMap: { [key: string]: number } = {
-          "40": 0.7,
-          "41": 0.5,
-          "42": 0.3,
-          "43": 0.6,
-          "44": 0.4,
-          "45": 0.8,
+      if (newFilters.types.length > 0) {
+        const typeMap: { [key: string]: number } = {
+          "Casual shoes": 0.6,
+          Runners: 0.4,
+          Hiking: 0.7,
+          Sneaker: 0.3,
+          Basketball: 0.5,
+          Golf: 0.8,
+          Outdoor: 0.6,
         };
-        const probability = sizeMap[newFilters.size] || 0.5;
+
         filtered = filtered.filter((shoe) => {
-          const randomValue = (shoe.id * 0.123457) % 1;
-          return randomValue > probability;
+          return newFilters.types.some((type) => {
+            const probability = typeMap[type] || 0.5;
+            const randomValue = (shoe.id * 0.234567) % 1;
+            return randomValue > probability;
+          });
         });
       }
 
@@ -454,7 +473,7 @@ const CategoriesPage: React.FC<CategoriesPageProps> = ({
                   <button
                     key={size}
                     className={`border rounded-lg p-2 ${
-                      activeFilters.size === size
+                      activeFilters.sizes.includes(size)
                         ? "bg-blue-500 text-white"
                         : "bg-stone-300 hover:bg-blue-500 hover:text-white"
                     }`}
@@ -464,6 +483,17 @@ const CategoriesPage: React.FC<CategoriesPageProps> = ({
                   </button>
                 ))}
               </div>
+            )}
+            {activeFilters.sizes.length > 0 && (
+              <button
+                className="mt-3 w-full py-2 text-sm text-white bg-blue-500 rounded-lg hover:bg-blue-600 transition-colors"
+                onClick={() => {
+                  setActiveFilters({ ...activeFilters, sizes: [] });
+                  setFilteredShoes(shoesData);
+                }}
+              >
+                Clear All Sizes
+              </button>
             )}
           </div>
 

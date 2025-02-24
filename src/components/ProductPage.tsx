@@ -20,6 +20,7 @@ const ProductPage: React.FC<ProductPageProps> = ({
   const [animationEnd, setAnimationEnd] = useState({ x: 0, y: 0 });
   const [showAnimation, setShowAnimation] = useState(false);
   const [isAdded, setIsAdded] = useState(false);
+  const [selectedSize, setSelectedSize] = useState<string>("");
 
   const handleBuyNow = (): void => {
     onAddToCart(product);
@@ -114,20 +115,19 @@ const ProductPage: React.FC<ProductPageProps> = ({
             <div className="rounded-lg mt-4">
               <h3 className="font-bold">SIZE</h3>
               <div className="grid grid-cols-5 gap-2 mt-2">
-                {["38", "39", "40", "41", "42", "43", "44", "45"].map(
-                  (size) => (
-                    <button
-                      key={size}
-                      className={`border rounded-lg p-2 transition-all duration-300 ${
-                        size === "43" || size === "42"
-                          ? "bg-stone-400 hover:bg-stone-500 hover:font-medium"
-                          : "bg-stone-300 hover:bg-stone-400 hover:font-medium"
-                      }`}
-                    >
-                      {size}
-                    </button>
-                  )
-                )}
+                {["40", "41", "42", "43", "44", "45"].map((size) => (
+                  <button
+                    key={size}
+                    className={`border rounded-lg p-2 transition-all duration-300 ${
+                      selectedSize === size
+                        ? "bg-stone-800 text-white hover:bg-stone-900"
+                        : "bg-stone-300 hover:bg-stone-400 hover:font-medium"
+                    }`}
+                    onClick={() => setSelectedSize(size)}
+                  >
+                    {size}
+                  </button>
+                ))}
               </div>
             </div>
             {/* Buttons */}
@@ -231,20 +231,19 @@ const ProductPage: React.FC<ProductPageProps> = ({
               <span className="text-blue-500 text-sm">SIZE CHART</span>
             </div>
             <div className="grid grid-cols-5 gap-2 mt-2">
-              {["38", "39", "40", "41", "42", "43", "44", "45", "46", "47"].map(
-                (size) => (
-                  <button
-                    key={size}
-                    className={`border rounded-lg p-2 text-sm hover:bg-blue-500 hover:text-white transition-colors duration-300 ${
-                      size === "43" || size === "42"
-                        ? "bg-stone-400"
-                        : "bg-stone-300"
-                    }`}
-                  >
-                    {size}
-                  </button>
-                )
-              )}
+              {["38", "39", "40", "41", "42", "43", "44", "45"].map((size) => (
+                <button
+                  key={size}
+                  className={`border rounded-lg p-2 text-sm transition-all duration-300 ${
+                    selectedSize === size
+                      ? "bg-stone-800 text-white hover:bg-stone-900"
+                      : "bg-stone-300 hover:bg-stone-400 hover:font-medium"
+                  }`}
+                  onClick={() => setSelectedSize(size)}
+                >
+                  {size}
+                </button>
+              ))}
             </div>
           </div>
           <div className="mt-6 space-y-2">

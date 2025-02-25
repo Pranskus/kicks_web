@@ -156,6 +156,7 @@ interface HeaderProps {
   onShowCart: () => void;
   onShowCategories: (gender: string, category: string) => void;
   onNewDropsClick: () => void;
+  currentPage?: string;
 }
 
 const Header: React.FC<HeaderProps> = ({
@@ -164,6 +165,7 @@ const Header: React.FC<HeaderProps> = ({
   onShowCart,
   onShowCategories,
   onNewDropsClick,
+  currentPage,
 }) => {
   const [isSearchActive, setIsSearchActive] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -518,7 +520,7 @@ const Header: React.FC<HeaderProps> = ({
       {/* Floating Cart */}
       <div
         className={`fixed bottom-8 right-8 transition-all duration-300 transform z-[9999] ${
-          showFloatingCart
+          showFloatingCart && currentPage !== "cart"
             ? "translate-y-0 opacity-100"
             : "translate-y-20 opacity-0"
         }`}

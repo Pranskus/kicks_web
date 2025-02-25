@@ -258,7 +258,7 @@ const ProductPage: React.FC<ProductPageProps> = ({
               <span className="text-blue-500 text-sm">SIZE CHART</span>
             </div>
             <div className="grid grid-cols-5 gap-2 mt-2">
-              {["38", "39", "40", "41", "42", "43", "44", "45"].map((size) => (
+              {["40", "41", "42", "43", "44", "45"].map((size) => (
                 <button
                   key={size}
                   className={`border rounded-lg p-2 text-sm transition-all duration-300 ${
@@ -272,6 +272,11 @@ const ProductPage: React.FC<ProductPageProps> = ({
                 </button>
               ))}
             </div>
+            {sizeError && (
+              <p className="text-red-500 text-sm mt-2">
+                Please select a size first
+              </p>
+            )}
           </div>
           <div className="mt-6 space-y-2">
             <button

@@ -80,6 +80,11 @@ const App: React.FC = () => {
     }
   };
 
+  const handleClearCart = (): void => {
+    setCartItems([]);
+    setCartCount(0);
+  };
+
   console.log("Current page:", currentPage);
 
   return (
@@ -90,6 +95,7 @@ const App: React.FC = () => {
         onShowCart={handleShowCart}
         onShowCategories={handleShowCategories}
         onNewDropsClick={handleNewDropsClick}
+        currentPage={currentPage}
       />
       {currentPage === "categories" && (
         <CategoriesPage
@@ -106,7 +112,11 @@ const App: React.FC = () => {
         />
       )}
       {currentPage === "cart" && (
-        <CartPage cartItems={cartItems} onRemoveItem={handleRemoveFromCart} />
+        <CartPage
+          cartItems={cartItems}
+          onRemoveItem={handleRemoveFromCart}
+          onClearCart={handleClearCart}
+        />
       )}
       {currentPage === "home" && (
         <>

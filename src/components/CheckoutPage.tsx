@@ -34,7 +34,7 @@ const paymentMethods = [
   { id: "card", name: "Credit Card", icon: <CreditCardIcon /> },
   { id: "paypal", name: "PayPal", icon: <PayPalIcon /> },
   { id: "apple", name: "Apple Pay", icon: <ApplePayIcon /> },
-  { id: "google", name: "Google Pay", icon: <GooglePayIcon /> },
+  { id: "google", name: "", icon: <GooglePayIcon /> },
 ];
 
 const CheckoutPage: React.FC<CheckoutPageProps> = ({
@@ -183,20 +183,22 @@ const CheckoutPage: React.FC<CheckoutPageProps> = ({
                 {/* Add payment method selection */}
                 <div className="mb-6">
                   <h3 className="font-bold mb-3">Payment Method</h3>
-                  <div className="grid grid-cols-2 gap-3">
+                  <div className="grid grid-cols-2 gap-4">
                     {paymentMethods.map((method) => (
                       <button
                         key={method.id}
                         type="button"
-                        className={`flex items-center justify-center p-4 border rounded-lg transition-all duration-300 ${
+                        className={`flex items-center justify-center h-16 border rounded-lg transition-all duration-300 ${
                           selectedPayment === method.id
                             ? "border-blue-500 bg-blue-50"
                             : "hover:border-gray-400"
                         }`}
                         onClick={() => setSelectedPayment(method.id)}
                       >
-                        <span className="mr-2">{method.icon}</span>
-                        <span>{method.name}</span>
+                        <div className="flex items-center gap-2">
+                          <span className="w-6">{method.icon}</span>
+                          <span className="text-lg">{method.name}</span>
+                        </div>
                       </button>
                     ))}
                   </div>

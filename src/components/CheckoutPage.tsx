@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { CartItem } from "../types";
 import BackButton from "./BackButton";
+import OrderConfirmationDialog from "./OrderConfirmationDialog";
 import {
   CreditCardIcon,
   PayPalIcon,
@@ -13,6 +14,7 @@ interface CheckoutPageProps {
   total: number;
   isPromoApplied: boolean;
   onBack: () => void;
+  onOrderComplete: () => void;
 }
 
 // Add example data
@@ -42,6 +44,7 @@ const CheckoutPage: React.FC<CheckoutPageProps> = ({
   total,
   isPromoApplied,
   onBack,
+  onOrderComplete,
 }) => {
   const [formData, setFormData] = useState({
     email: "",
@@ -60,6 +63,8 @@ const CheckoutPage: React.FC<CheckoutPageProps> = ({
 
   // Add state for payment method
   const [selectedPayment, setSelectedPayment] = useState<string>("card");
+
+  const [showConfirmation, setShowConfirmation] = useState(false);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -81,7 +86,13 @@ const CheckoutPage: React.FC<CheckoutPageProps> = ({
     } else {
       // Handle payment submission
       console.log("Processing payment...", formData);
+      setShowConfirmation(true);
     }
+  };
+
+  const handleOrderComplete = () => {
+    setShowConfirmation(false);
+    onOrderComplete();
   };
 
   return (
@@ -282,6 +293,11 @@ const CheckoutPage: React.FC<CheckoutPageProps> = ({
           </div>
         </div>
       </div>
+
+      <OrderConfirmationDialog
+        isOpen={showConfirmation}
+        onClose={handleOrderComplete}
+      />
     </div>
   );
 };

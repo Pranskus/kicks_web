@@ -152,10 +152,15 @@ const CartPage: React.FC<CartPageProps> = ({
 
           <div className="mt-6">
             <button
-              className="w-full bg-black text-white py-3 rounded-lg text-sm lg:text-base hover:bg-stone-900 transition-colors duration-300"
+              className={`w-full py-3 rounded-lg text-sm lg:text-base transition-colors duration-300 ${
+                cartItems.length === 0
+                  ? "bg-gray-400 cursor-not-allowed"
+                  : "bg-black text-white hover:bg-stone-900"
+              }`}
               onClick={onCheckout}
+              disabled={cartItems.length === 0}
             >
-              CHECKOUT
+              {cartItems.length === 0 ? "CART IS EMPTY" : "CHECKOUT"}
             </button>
           </div>
 

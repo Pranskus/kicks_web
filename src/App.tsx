@@ -90,7 +90,18 @@ const App: React.FC = () => {
   };
 
   const handleCheckout = (): void => {
+    if (cartItems.length === 0) {
+      return;
+    }
     setCurrentPage("checkout");
+    window.scrollTo(0, 0);
+  };
+
+  const handleOrderComplete = (): void => {
+    setCartItems([]);
+    setCartCount(0);
+    setIsPromoApplied(false);
+    setCurrentPage("home");
     window.scrollTo(0, 0);
   };
 
@@ -158,12 +169,13 @@ const App: React.FC = () => {
           isPromoApplied={isPromoApplied}
         />
       )}
-      {currentPage === "checkout" && (
+      {currentPage === "checkout" && cartItems.length > 0 && (
         <CheckoutPage
           cartItems={cartItems}
           total={cartItems.reduce((sum, item) => sum + item.price, 0) + 6.99}
           isPromoApplied={isPromoApplied}
           onBack={handleGoBack}
+          onOrderComplete={handleOrderComplete}
         />
       )}
       {currentPage === "home" && (

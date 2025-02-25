@@ -187,7 +187,7 @@ const App: React.FC = () => {
             onShowProduct={handleShowProduct}
             onShowCategories={handleShowCategories}
           />
-          <Categories />
+          <Categories onShowCategories={handleShowCategories} />
           <Footer />
         </>
       )}

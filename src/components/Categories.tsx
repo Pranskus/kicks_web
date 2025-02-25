@@ -12,7 +12,11 @@ interface Category {
   name: string;
 }
 
-const Categories: React.FC = () => {
+interface CategoriesProps {
+  onShowCategories: (gender: string, category: string) => void;
+}
+
+const Categories: React.FC<CategoriesProps> = ({ onShowCategories }) => {
   const [currentIndex, setCurrentIndex] = useState<number>(0);
 
   const categories: Category[] = [
@@ -86,7 +90,12 @@ const Categories: React.FC = () => {
                   <br />
                   {category.name.split(" ").slice(1).join(" ")}
                 </h3>
-                <button className="bg-stone-800 p-2 rounded-xl transition-transform duration-300 ease-in-out transform hover:scale-110">
+                <button
+                  onClick={() =>
+                    onShowCategories("All", category.name.toLowerCase())
+                  }
+                  className="bg-stone-800 p-2 rounded-xl transition-transform duration-300 ease-in-out transform hover:scale-110"
+                >
                   <UilArrowUpRight className="ml-1 text-white" />
                 </button>
               </div>

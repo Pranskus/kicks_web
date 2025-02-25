@@ -1,12 +1,17 @@
 import React, { useState } from "react";
 import { UilHeart, UilTrashAlt } from "./IconWrappers";
 import { CartItem } from "../types";
+import BackButton from "./BackButton";
 
 // Add interfaces for the component props and cart item
 interface CartPageProps {
   cartItems: CartItem[];
   onRemoveItem: (id: string) => void;
   onClearCart: () => void;
+  onCheckout: () => void;
+  onBack: () => void;
+  onPromoApply: (applied: boolean) => void;
+  isPromoApplied: boolean;
 }
 
 // Update component definition with types
@@ -14,15 +19,21 @@ const CartPage: React.FC<CartPageProps> = ({
   cartItems,
   onRemoveItem,
   onClearCart,
+  onCheckout,
+  onBack,
+  onPromoApply,
+  isPromoApplied: initialPromoApplied,
 }) => {
   const [promoCode, setPromoCode] = useState<string>("");
-  const [isPromoApplied, setIsPromoApplied] = useState<boolean>(false);
+  const [isPromoApplied, setIsPromoApplied] =
+    useState<boolean>(initialPromoApplied);
   const [showPromoInput, setShowPromoInput] = useState<boolean>(false);
   const [promoError, setPromoError] = useState<string>("");
 
   const handleApplyPromo = () => {
     if (promoCode.toLowerCase() === "frontend") {
       setIsPromoApplied(true);
+      onPromoApply(true);
       setPromoError("");
       setShowPromoInput(false);
     } else {
@@ -36,10 +47,9 @@ const CartPage: React.FC<CartPageProps> = ({
   const total = subtotal - discount + deliveryFee;
 
   return (
-    <div className="px-4 lg:mx-20 pb-16 lg:pb-24">
-      {" "}
-      {/* Added bottom padding here */}
-      <h1 className="text-3xl lg:text-4xl font-bold mb-2 mt-6 lg:mt-10">
+    <div className="px-4 lg:mx-20 py-8">
+      <BackButton onBack={onBack} />
+      <h1 className="text-3xl lg:text-4xl font-bold mb-2">
         Saving to celebrate
       </h1>
       <p className="text-gray-600 mb-4 text-sm lg:text-base">
@@ -140,9 +150,14 @@ const CartPage: React.FC<CartPageProps> = ({
             </div>
           </div>
 
-          <button className="w-full bg-black text-white py-3 rounded-lg text-sm lg:text-base hover:bg-stone-900 transition-colors duration-300 mt-4">
-            CHECKOUT
-          </button>
+          <div className="mt-6">
+            <button
+              className="w-full bg-black text-white py-3 rounded-lg text-sm lg:text-base hover:bg-stone-900 transition-colors duration-300"
+              onClick={onCheckout}
+            >
+              CHECKOUT
+            </button>
+          </div>
 
           {showPromoInput ? (
             <div className="mt-4">

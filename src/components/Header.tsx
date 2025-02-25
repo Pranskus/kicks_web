@@ -157,6 +157,7 @@ interface HeaderProps {
   onShowCategories: (gender: string, category: string) => void;
   onNewDropsClick: () => void;
   currentPage?: string;
+  onGoBack?: () => void;
 }
 
 const Header: React.FC<HeaderProps> = ({
@@ -166,6 +167,7 @@ const Header: React.FC<HeaderProps> = ({
   onShowCategories,
   onNewDropsClick,
   currentPage,
+  onGoBack,
 }) => {
   const [isSearchActive, setIsSearchActive] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);

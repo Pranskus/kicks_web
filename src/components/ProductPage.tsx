@@ -2,12 +2,14 @@ import React, { useState } from "react";
 import SimilarShoes from "./SimilarShoes";
 import { Product } from "../types";
 import CartAnimation from "./CartAnimation";
+import BackButton from "./BackButton";
 
 interface ProductPageProps {
   product: Product;
   onShowProduct: (product: Product) => void;
   onAddToCart: (product: Product) => void;
   onBuyNow: () => void;
+  onBack: () => void;
 }
 
 const ProductPage: React.FC<ProductPageProps> = ({
@@ -15,6 +17,7 @@ const ProductPage: React.FC<ProductPageProps> = ({
   onShowProduct,
   onAddToCart,
   onBuyNow,
+  onBack,
 }) => {
   const [animationStart, setAnimationStart] = useState({ x: 0, y: 0 });
   const [animationEnd, setAnimationEnd] = useState({ x: 0, y: 0 });
@@ -77,6 +80,9 @@ const ProductPage: React.FC<ProductPageProps> = ({
 
   return (
     <div>
+      <div className="px-4 lg:mx-20 py-8">
+        <BackButton onBack={onBack} />
+      </div>
       {showAnimation && (
         <CartAnimation
           startPosition={animationStart}

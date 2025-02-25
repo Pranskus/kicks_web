@@ -7,6 +7,7 @@ import ProductPage from "./components/ProductPage"; // Import the ProductPage
 import Footer from "./components/Footer";
 import Categories from "./components/Categories";
 import CartPage from "./components/CartPage"; // Import the CartPage
+import CheckoutPage from "./components/CheckoutPage";
 import { Product, CartItem, Category } from "./types";
 
 const App: React.FC = () => {
@@ -18,6 +19,9 @@ const App: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState<Category | null>(
     null
   );
+  const [isCheckout, setIsCheckout] = useState<boolean>(false);
+  const [previousPage, setPreviousPage] = useState<string>("home");
+  const [isPromoApplied, setIsPromoApplied] = useState<boolean>(false);
 
   const handleShowCategories = (gender: string, category: string): void => {
     setSelectedCategory({ gender, category });
@@ -85,6 +89,37 @@ const App: React.FC = () => {
     setCartCount(0);
   };
 
+  const handleCheckout = (): void => {
+    setCurrentPage("checkout");
+    window.scrollTo(0, 0);
+  };
+
+  const handleGoBack = (): void => {
+    switch (currentPage) {
+      case "product":
+        setCurrentPage("categories");
+        break;
+      case "cart":
+        setCurrentPage(previousPage || "home");
+        break;
+      case "checkout":
+        setCurrentPage("cart");
+        break;
+      default:
+        setCurrentPage("home");
+    }
+    window.scrollTo(0, 0);
+  };
+
+  const setPageWithHistory = (newPage: string) => {
+    setPreviousPage(currentPage);
+    setCurrentPage(newPage);
+  };
+
+  const handlePromoApply = (applied: boolean) => {
+    setIsPromoApplied(applied);
+  };
+
   console.log("Current page:", currentPage);
 
   return (
@@ -109,6 +144,7 @@ const App: React.FC = () => {
           onShowProduct={handleShowProduct}
           onAddToCart={handleAddToCart}
           onBuyNow={handleBuyNow}
+          onBack={handleGoBack}
         />
       )}
       {currentPage === "cart" && (
@@ -116,6 +152,18 @@ const App: React.FC = () => {
           cartItems={cartItems}
           onRemoveItem={handleRemoveFromCart}
           onClearCart={handleClearCart}
+          onCheckout={handleCheckout}
+          onBack={handleGoBack}
+          onPromoApply={handlePromoApply}
+          isPromoApplied={isPromoApplied}
+        />
+      )}
+      {currentPage === "checkout" && (
+        <CheckoutPage
+          cartItems={cartItems}
+          total={cartItems.reduce((sum, item) => sum + item.price, 0) + 6.99}
+          isPromoApplied={isPromoApplied}
+          onBack={handleGoBack}
         />
       )}
       {currentPage === "home" && (

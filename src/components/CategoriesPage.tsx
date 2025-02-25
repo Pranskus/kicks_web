@@ -760,9 +760,7 @@ const CategoriesPage: React.FC<CategoriesPageProps> = ({
 
         {/* Right Column for Products */}
         <div className="lg:w-3/4 lg:pl-4">
-          <h2 className="text-4xl font-bold text-stone-800">
-            LIFE STYLE SHOES
-          </h2>
+          <h2 className="text-4xl font-bold text-stone-800">KICKS</h2>
 
           {/* Filters and Trending dropdowns for small screens */}
           <div className="lg:hidden flex justify-between items-center mt-4">

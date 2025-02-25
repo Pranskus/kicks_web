@@ -24,6 +24,7 @@ const App: React.FC = () => {
   const [isPromoApplied, setIsPromoApplied] = useState<boolean>(false);
 
   const handleShowCategories = (gender: string, category: string): void => {
+    console.log("handleShowCategories called with:", gender, category);
     setSelectedCategory({ gender, category });
     setCurrentPage("categories");
     window.scrollTo(0, 0);

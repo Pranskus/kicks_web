@@ -171,6 +171,7 @@ const Header: React.FC<HeaderProps> = ({
 }) => {
   const [isSearchActive, setIsSearchActive] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isMobileCategoriesOpen, setIsMobileCategoriesOpen] = useState(false);
   const [showMenCategories, setShowMenCategories] = useState(false);
   const [showWomenCategories, setShowWomenCategories] = useState(false);
   const searchRef = useRef<HTMLDivElement>(null);
@@ -288,7 +289,10 @@ const Header: React.FC<HeaderProps> = ({
               <div className="relative" ref={dropdownRef}>
                 <button
                   className="font-semibold text-gray-800 hover:text-[#2998ef] transition duration-300 whitespace-nowrap"
-                  onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                  onClick={() => {
+                    console.log("Categories button clicked");
+                    setIsDropdownOpen((prev) => !prev);
+                  }}
                   style={{ fontSize: "16px" }}
                 >
                   Categories
@@ -426,6 +430,7 @@ const Header: React.FC<HeaderProps> = ({
               duration={500}
               className="new-drops-link block py-6 text-xl font-bold"
               onClick={handleNewDropsClick}
+              style={{ cursor: "pointer" }}
             >
               New Drops <AnimatedFire>🔥</AnimatedFire>
             </Link>
@@ -434,64 +439,38 @@ const Header: React.FC<HeaderProps> = ({
               {}
               <button
                 className="text-xl font-bold"
-                onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                onClick={() => {
+                  setIsMobileCategoriesOpen((prev) => !prev);
+                }}
               >
                 Categories
               </button>
-              {isDropdownOpen && (
+              {isMobileCategoriesOpen && (
                 <div className="mt-4">
                   {" "}
                   {}
                   <button
                     className="block py-3 w-full text-lg font-bold"
                     onClick={() => {
-                      handleCategoryClick("Men");
+                      console.log("Men button clicked");
+                      onShowCategories("Men", "All");
                       toggleMobileMenu();
+                      setIsMobileCategoriesOpen(false);
                     }}
                   >
                     Men
                   </button>
-                  {showMenCategories && (
-                    <div>
-                      {categories.Men.map((category) => (
-                        <button
-                          key={category}
-                          className="block py-3 w-full text-base font-semibold"
-                          onClick={() => {
-                            handleCategoryClick("Men");
-                            toggleMobileMenu();
-                          }}
-                        >
-                          {category}
-                        </button>
-                      ))}
-                    </div>
-                  )}
                   <button
                     className="block py-3 w-full text-lg font-bold"
                     onClick={() => {
-                      handleCategoryClick("Women");
+                      console.log("Women button clicked");
+                      onShowCategories("Women", "All");
                       toggleMobileMenu();
+                      setIsMobileCategoriesOpen(false);
                     }}
                   >
                     Women
                   </button>
-                  {showWomenCategories && (
-                    <div>
-                      {categories.Women.map((category) => (
-                        <button
-                          key={category}
-                          className="block py-3 w-full text-base font-semibold"
-                          onClick={() => {
-                            handleCategoryClick("Women");
-                            toggleMobileMenu();
-                          }}
-                        >
-                          {category}
-                        </button>
-                      ))}
-                    </div>
-                  )}
                 </div>
               )}
             </div>

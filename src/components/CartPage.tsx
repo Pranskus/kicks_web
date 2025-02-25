@@ -56,9 +56,9 @@ const CartPage: React.FC<CartPageProps> = ({ cartItems, onRemoveItem }) => {
                   {item.color || "Color not specified"}
                 </p>
                 <div className="flex mt-2">
-                  <select className="border rounded mr-4 px-2 py-1 text-sm lg:text-base">
-                    <option>Size {item.size || "Not specified"}</option>
-                  </select>
+                  <div className="border rounded mr-4 px-2 py-1 text-sm lg:text-base">
+                    Size: {item.size}
+                  </div>
                   <select className="border rounded px-2 py-1 text-sm lg:text-base">
                     <option>Quantity 1</option>
                   </select>

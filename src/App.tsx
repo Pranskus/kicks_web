@@ -34,11 +34,11 @@ const App: React.FC = () => {
   const handleAddToCart = (product: Product): void => {
     const productWithDetails: CartItem = {
       id: product.id,
+      cartItemId: Date.now().toString(),
       name: product.name,
       img: product.img,
       price: parseFloat(product.price.replace(/[^0-9.-]+/g, "")),
-      size: "42",
-      cartItemId: Date.now().toString(),
+      size: product.size || "42",
     };
 
     setCartItems((prevItems) => [...prevItems, productWithDetails]);

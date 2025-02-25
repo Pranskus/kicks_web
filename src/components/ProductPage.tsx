@@ -21,13 +21,29 @@ const ProductPage: React.FC<ProductPageProps> = ({
   const [showAnimation, setShowAnimation] = useState(false);
   const [isAdded, setIsAdded] = useState(false);
   const [selectedSize, setSelectedSize] = useState<string>("");
+  const [sizeError, setSizeError] = useState<boolean>(false);
 
   const handleBuyNow = (): void => {
-    onAddToCart(product);
+    if (!selectedSize) {
+      setSizeError(true);
+      setTimeout(() => setSizeError(false), 3000);
+      return;
+    }
+
+    onAddToCart({
+      ...product,
+      size: selectedSize,
+    });
     onBuyNow();
   };
 
   const handleAddToCart = (e: React.MouseEvent<HTMLButtonElement>) => {
+    if (!selectedSize) {
+      setSizeError(true);
+      setTimeout(() => setSizeError(false), 3000);
+      return;
+    }
+
     const buttonRect = e.currentTarget.getBoundingClientRect();
     setAnimationStart({
       x: buttonRect.left + buttonRect.width / 2,
@@ -45,7 +61,13 @@ const ProductPage: React.FC<ProductPageProps> = ({
     setIsAdded(true);
 
     setTimeout(() => {
-      onAddToCart(product);
+      onAddToCart({
+        id: product.id,
+        name: product.name,
+        img: product.img,
+        price: product.price,
+        size: selectedSize,
+      });
     }, 500);
 
     setTimeout(() => {
@@ -129,6 +151,11 @@ const ProductPage: React.FC<ProductPageProps> = ({
                   </button>
                 ))}
               </div>
+              {sizeError && (
+                <p className="text-red-500 text-sm mt-2">
+                  Please select a size first
+                </p>
+              )}
             </div>
             {/* Buttons */}
             <div className="flex flex-col mt-8 w-full">
